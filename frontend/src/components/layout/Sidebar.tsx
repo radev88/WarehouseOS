@@ -3,9 +3,12 @@ import {
   Package,
   Boxes,
   Truck,
+  ClipboardList,
   BarChart3,
   Settings
 } from "lucide-react"
+
+import { NavLink } from "react-router-dom"
 
 
 function Sidebar() {
@@ -13,26 +16,37 @@ function Sidebar() {
   const menuItems = [
     {
       name: "Dashboard",
+      path: "/",
       icon: LayoutDashboard
     },
     {
       name: "Inventory",
+      path: "/inventory",
       icon: Boxes
     },
     {
       name: "Products",
+      path: "/products",
       icon: Package
     },
     {
       name: "Receiving",
+      path: "/receiving",
       icon: Truck
     },
     {
+      name: "Purchase Orders",
+      path: "/purchase-orders",
+      icon: ClipboardList
+    },
+    {
       name: "Reports",
+      path: "/reports",
       icon: BarChart3
     },
     {
       name: "Settings",
+      path: "/settings",
       icon: Settings
     }
   ]
@@ -55,20 +69,25 @@ function Sidebar() {
 
           return (
 
-            <div
+            <NavLink
               key={item.name}
-              className="
+              to={item.path}
+              className={({isActive}) =>
+                `
                 flex
                 items-center
                 gap-3
                 rounded-lg
                 px-4
                 py-3
-                text-slate-300
-                hover:bg-slate-800
-                hover:text-white
                 cursor-pointer
-              "
+                ${
+                  isActive
+                  ? "bg-slate-800 text-white"
+                  : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                }
+                `
+              }
             >
 
               <Icon size={20}/>
@@ -77,15 +96,13 @@ function Sidebar() {
                 {item.name}
               </span>
 
-
-            </div>
+            </NavLink>
 
           )
 
         })}
 
       </nav>
-
 
     </aside>
 

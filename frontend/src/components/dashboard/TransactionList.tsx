@@ -7,28 +7,32 @@ type Transaction = {
 }
 
 
-const transactions: Transaction[] = [
-  {
-    id: 1,
-    type: "Receipt",
-    product: "Steel Bracket",
-    quantity: 100,
-    date: "07/10/2026",
-  },
-  {
-    id: 2,
-    type: "Issue",
-    product: "Motor Assembly",
-    quantity: -25,
-    date: "07/09/2026",
-  },
-  {
-    id: 3,
-    type: "Adjustment",
-    product: "Bearing Kit",
-    quantity: 5,
-    date: "07/08/2026",
-  },
+const Transactions: Transaction[] = [
+
+{
+ id:1,
+ type:"Receiving",
+ product:"30mL Amber Glass Bottle",
+ quantity:25000,
+ date:"07/10/2026"
+},
+
+{
+ id:2,
+ type:"Production Issue",
+ product:"Child Resistant Cap",
+ quantity:-5000,
+ date:"07/09/2026"
+},
+
+{
+ id:3,
+ type:"QA Release",
+ product:"Vitamin Supplement Bottle 30ct",
+ quantity:1200,
+ date:"07/08/2026"
+}
+
 ]
 
 
@@ -50,7 +54,7 @@ function TransactionList() {
 
       <div>
 
-        {transactions.map((transaction)=>(
+        {Transactions.map((transaction)=>(
 
           <div
             key={transaction.id}
