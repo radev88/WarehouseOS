@@ -8,3 +8,4 @@ class InventoryResponse(BaseModel):
     warehouse: str
     location: str
     quantity: int
+    status: str

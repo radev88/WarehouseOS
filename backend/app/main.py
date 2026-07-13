@@ -4,6 +4,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import engine
 from app.routers import products
 from app.routers import inventory
+from app.routers import dashboard
+from app.routers import warehouses
+from app.routers import transactions
+
 
 
 app = FastAPI(
@@ -26,6 +30,9 @@ app.add_middleware(
 
 app.include_router(products.router)
 app.include_router(inventory.router)
+app.include_router(dashboard.router)
+app.include_router(warehouses.router)
+app.include_router(transactions.router)
 
 
 @app.get("/")

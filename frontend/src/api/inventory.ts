@@ -11,4 +11,5 @@ export async function getInventory(){
     )
 
     return response.data
+
 }

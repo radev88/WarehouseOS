@@ -29,10 +29,19 @@ def get_inventory(
         .all()
     )
 
-
     inventory = []
 
     for item in results:
+
+        if item.quantity == 0:
+            status = "Out of Stock"
+
+        elif item.quantity < 100:
+            status = "Low Stock"
+
+        else:
+            status = "Available"
+
 
         inventory.append(
             {
@@ -40,8 +49,42 @@ def get_inventory(
                 "product": item.product.name,
                 "warehouse": item.location.warehouse.name,
                 "location": item.location.code,
-                "quantity": item.quantity
+                "quantity": item.quantity,
+                "status": status
             }
         )
 
     return inventory
+
+
+
+@router.get("/status-summary")
+def get_inventory_status_summary(
+    db: Session = Depends(get_db)
+):
+
+    results = db.query(Inventory).all()
+
+
+    available = 0
+    low_stock = 0
+    out_of_stock = 0
+
+
+    for item in results:
+
+        if item.quantity == 0:
+            out_of_stock += 1
+    
+        elif item.quantity < 100:
+            low_stock += 1
+
+        else:
+            available += 1
+
+
+    return {
+        "available": available,
+        "low_stock": low_stock,
+        "out_of_stock": out_of_stock
+    }

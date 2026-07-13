@@ -1,68 +1,80 @@
 import { useEffect, useState } from "react"
-import { getInventory } from "../../api/inventory"
+import StatusBadge from "../common/StatusBadge"
 
 
-type InventoryItem = {
-  sku:string
-  product:string
-  warehouse:string
-  location:string
-  quantity:number
+interface InventoryItem {
+  sku: string
+  product: string
+  warehouse: string
+  location: string
+  quantity: number
+  status: string
 }
 
 
-function InventoryTable(){
-
-  const [inventory,setInventory] = useState<InventoryItem[]>([])
+function InventoryTable() {
 
 
-  useEffect(()=>{
+  const [inventory, setInventory] = useState<InventoryItem[]>([])
 
-    getInventory()
-      .then(data=>{
+
+  useEffect(() => {
+
+    fetch("http://127.0.0.1:8000/inventory/")
+      .then((response) => response.json())
+      .then((data) => {
         setInventory(data)
       })
+      .catch((error) => {
+        console.error(
+          "Inventory fetch error:",
+          error
+        )
+      })
 
-  },[])
+  }, [])
+
 
 
   return (
 
-    <div className="rounded-xl border bg-white shadow-sm">
+    <div className="rounded-xl border bg-white p-6 shadow-sm">
 
-      <div className="border-b p-5">
 
-        <h2 className="text-lg font-semibold">
-          Inventory Overview
-        </h2>
-
-      </div>
+      <h2 className="text-lg font-semibold mb-4">
+        Inventory Overview
+      </h2>
 
 
       <table className="w-full">
 
-        <thead className="bg-gray-50">
 
-          <tr>
+        <thead>
 
-            <th className="p-4 text-left">
+          <tr className="border-b text-left">
+
+            <th className="p-3">
               SKU
             </th>
 
-            <th className="p-4 text-left">
+            <th className="p-3">
               Product
             </th>
 
-            <th className="p-4 text-left">
+            <th className="p-3">
               Warehouse
             </th>
 
-            <th className="p-4 text-left">
+            <th className="p-3">
               Location
             </th>
 
-            <th className="p-4 text-left">
+            <th className="p-3">
               Quantity
+            </th>
+
+            <th className="p-3">
+              Status
             </th>
 
           </tr>
@@ -70,42 +82,57 @@ function InventoryTable(){
         </thead>
 
 
+
         <tbody>
 
-          {inventory.map((item)=>(
-            
-            <tr 
+
+          {inventory.map((item) => (
+
+            <tr
               key={item.sku}
-              className="border-t"
+              className="border-b"
             >
 
-              <td className="p-4">
+              <td className="p-3">
                 {item.sku}
               </td>
 
-              <td className="p-4 font-medium">
+
+              <td className="p-3">
                 {item.product}
               </td>
 
-              <td className="p-4">
+
+              <td className="p-3">
                 {item.warehouse}
               </td>
 
-              <td className="p-4">
+
+              <td className="p-3">
                 {item.location}
               </td>
 
-              <td className="p-4">
+
+              <td className="p-3">
                 {item.quantity}
               </td>
+
+
+              <td className="p-3">
+                <StatusBadge status={item.status}/>
+              </td>
+
 
             </tr>
 
           ))}
 
+
         </tbody>
 
+
       </table>
+
 
     </div>
 

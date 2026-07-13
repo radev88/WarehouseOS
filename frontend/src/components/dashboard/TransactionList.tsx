@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react"
+
+
 type Transaction = {
   id: number
   type: string
@@ -7,36 +10,35 @@ type Transaction = {
 }
 
 
-const Transactions: Transaction[] = [
-
-{
- id:1,
- type:"Receiving",
- product:"30mL Amber Glass Bottle",
- quantity:25000,
- date:"07/10/2026"
-},
-
-{
- id:2,
- type:"Production Issue",
- product:"Child Resistant Cap",
- quantity:-5000,
- date:"07/09/2026"
-},
-
-{
- id:3,
- type:"QA Release",
- product:"Vitamin Supplement Bottle 30ct",
- quantity:1200,
- date:"07/08/2026"
-}
-
-]
-
 
 function TransactionList() {
+
+
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+
+
+
+  useEffect(() => {
+
+    fetch("http://127.0.0.1:8000/transactions/")
+      .then((response) => response.json())
+      .then((data) => {
+
+        setTransactions(data)
+
+      })
+      .catch((error) => {
+
+        console.error(
+          "Transaction fetch error:",
+          error
+        )
+
+      })
+
+  }, [])
+
+
 
   return (
 
@@ -52,14 +54,17 @@ function TransactionList() {
       </div>
 
 
+
       <div>
 
-        {Transactions.map((transaction)=>(
+
+        {transactions.map((transaction) => (
 
           <div
             key={transaction.id}
             className="flex justify-between border-b p-4"
           >
+
 
             <div>
 
@@ -67,11 +72,13 @@ function TransactionList() {
                 {transaction.product}
               </p>
 
+
               <p className="text-sm text-gray-500">
                 {transaction.type} • {transaction.date}
               </p>
 
             </div>
+
 
 
             <div
@@ -89,7 +96,6 @@ function TransactionList() {
 
 
           </div>
-
 
         ))}
 

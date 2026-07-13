@@ -1,48 +1,101 @@
-function WarehouseStatus(){
+import { useEffect, useState } from "react"
+
+
+interface WarehouseStatus {
+  warehouse: string
+  items: number
+  capacity: number
+  utilization: number
+}
+
+
+function WarehouseStatus() {
+
+
+  const [warehouses, setWarehouses] = useState<WarehouseStatus[]>([])
+
+
+  useEffect(() => {
+
+    fetch("http://127.0.0.1:8000/warehouses/status")
+      .then((response) => response.json())
+      .then((data) => {
+        setWarehouses(data)
+      })
+      .catch((error) => {
+        console.error(
+          "Warehouse status error:",
+          error
+        )
+      })
+
+  }, [])
+
+
 
   return (
 
-    <div className="rounded-xl bg-slate-900 text-white p-6">
+    <div className="rounded-xl border bg-white p-6 shadow-sm">
 
-      <h2 className="text-lg font-semibold">
-        Orlando Distribution Center
+
+      <h2 className="text-lg font-semibold mb-4">
+        Warehouse Overview
       </h2>
 
 
-      <div className="mt-4 grid grid-cols-3 gap-4">
+      <div className="space-y-4">
 
 
-        <div>
-          <p className="text-slate-400 text-sm">
-            Capacity
-          </p>
+        {warehouses.map((warehouse) => (
 
-          <p className="text-2xl font-bold">
-            78%
-          </p>
-        </div>
+          <div
+            key={warehouse.warehouse}
+            className="border rounded-lg p-4"
+          >
 
 
-        <div>
-          <p className="text-slate-400 text-sm">
-            Active Workers
-          </p>
-
-          <p className="text-2xl font-bold">
-            14
-          </p>
-        </div>
+            <div className="flex justify-between mb-2">
 
 
-        <div>
-          <p className="text-slate-400 text-sm">
-            Orders Today
-          </p>
+              <span className="font-medium">
+                {warehouse.warehouse}
+              </span>
 
-          <p className="text-2xl font-bold">
-            86
-          </p>
-        </div>
+
+              <span className="text-sm text-gray-500">
+                {warehouse.utilization}%
+              </span>
+
+
+            </div>
+
+
+
+            <div className="w-full bg-gray-200 rounded-full h-3">
+
+
+              <div
+                className="bg-blue-600 h-3 rounded-full"
+                style={{
+                  width: `${warehouse.utilization}%`
+                }}
+              />
+
+
+            </div>
+
+
+
+            <p className="text-sm text-gray-500 mt-2">
+
+              {warehouse.items} / {warehouse.capacity} units
+
+            </p>
+
+
+          </div>
+
+        ))}
 
 
       </div>
@@ -53,5 +106,6 @@ function WarehouseStatus(){
   )
 
 }
+
 
 export default WarehouseStatus
