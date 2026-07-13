@@ -1,94 +1,34 @@
-import StatusBadge from "../common/StatusBadge"
+import { useEffect, useState } from "react"
+import { getInventory } from "../../api/inventory"
 
 
 type InventoryItem = {
-  sku: string
-  product: string
-  warehouse: string
-  lotNumber: string
-  expirationDate: string
-  location: string
-  quantity: number
-  status: string
+  sku:string
+  product:string
+  warehouse:string
+  location:string
+  quantity:number
 }
 
 
-const inventory: InventoryItem[] = [
+function InventoryTable(){
 
-  {
-    sku: "PKG-1001",
-    product: "30mL Amber Glass Bottle",
-    warehouse: "Orlando Pharma DC",
-    location: "RM-A-01-02",
-    lotNumber: "LOT-A3829",
-    expirationDate: "08/15/2028",
-    quantity: 25000,
-    status: "Available"
-  },
+  const [inventory,setInventory] = useState<InventoryItem[]>([])
 
-  {
-    sku: "PKG-2005",
-    product: "Child Resistant Cap",
-    warehouse: "Orlando Pharma DC",
-    location: "PKG-A-02-04",
-    lotNumber: "LOT-B1942",
-    expirationDate: "11/30/2027",
-    quantity: 40000,
-    status: "Available"
-  },
 
-  {
-    sku: "RM-3010",
-    product: "HDPE Resin",
-    warehouse: "Raw Material Storage",
-    location: "RM-B-01-03",
-    lotNumber: "LOT-R8821",
-    expirationDate: "03/22/2027",
-    quantity: 5500,
-    status: "Quality Hold"
-  },
+  useEffect(()=>{
 
-  {
-    sku: "FG-5001",
-    product: "Vitamin Supplement Bottle 30ct",
-    warehouse: "Finished Goods Area",
-    location: "FG-C-02-01",
-    lotNumber: "LOT-F2219",
-    expirationDate: "12/01/2027",
-    quantity: 1200,
-    status: "Released"
-  },
+    getInventory()
+      .then(data=>{
+        setInventory(data)
+      })
 
-  {
-    sku: "PKG-4012",
-    product: "Printed Folding Carton - 30ct",
-    warehouse: "Packaging Material Storage",
-    location: "PKG-B-03-06",
-    lotNumber: "LOT-C7734",
-    expirationDate: "06/18/2029",
-    quantity: 800,
-    status: "Low Stock"
-  },
+  },[])
 
-  {
-    sku: "RM-6020",
-    product: "Silica Gel Desiccant Pack",
-    warehouse: "Raw Material Storage",
-    location: "RM-C-02-05",
-    lotNumber: "LOT-S5520",
-    expirationDate: "09/10/2028",
-    quantity: 15000,
-    status: "Pending Inspection"
-  }
-
-]
-
-function InventoryTable() {
 
   return (
 
     <div className="rounded-xl border bg-white shadow-sm">
-
 
       <div className="border-b p-5">
 
@@ -101,36 +41,28 @@ function InventoryTable() {
 
       <table className="w-full">
 
-
         <thead className="bg-gray-50">
 
           <tr>
 
-            <th className="p-4 text-left text-sm">
+            <th className="p-4 text-left">
               SKU
             </th>
 
-            <th className="p-4 text-left text-sm">
+            <th className="p-4 text-left">
               Product
             </th>
 
-            <th className="p-4 text-left text-sm">
+            <th className="p-4 text-left">
               Warehouse
             </th>
-            <th className="p-4 text-left text-sm">
-             Lot
+
+            <th className="p-4 text-left">
+              Location
             </th>
 
-            <th className="p-4 text-left text-sm">
-              Expiration
-            </th>
-
-            <th className="p-4 text-left text-sm">
+            <th className="p-4 text-left">
               Quantity
-            </th>
-
-            <th className="p-4 text-left text-sm">
-              Status
             </th>
 
           </tr>
@@ -138,66 +70,42 @@ function InventoryTable() {
         </thead>
 
 
-
         <tbody>
 
-
-          {inventory.map((item) => (
-
-            <tr
+          {inventory.map((item)=>(
+            
+            <tr 
               key={item.sku}
-              className="border-t hover:bg-gray-50"
+              className="border-t"
             >
-
 
               <td className="p-4">
                 {item.sku}
               </td>
 
-
-
               <td className="p-4 font-medium">
                 {item.product}
               </td>
-
-
 
               <td className="p-4">
                 {item.warehouse}
               </td>
 
               <td className="p-4">
-                {item.lotNumber}
+                {item.location}
               </td>
 
               <td className="p-4">
-                {item.expirationDate}
+                {item.quantity}
               </td>
-
-              <td className="p-4">
-                {item.quantity.toLocaleString()}
-              </td>
-
-
-
-              <td className="p-4">
-
-                <StatusBadge status={item.status} />
-
-              </td>
-
-
 
             </tr>
 
           ))}
 
-
         </tbody>
 
-
       </table>
-
 
     </div>
 
