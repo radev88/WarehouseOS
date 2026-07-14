@@ -69,21 +69,33 @@ def warehouse_status(
 
     for warehouse in warehouses.values():
 
-        utilization = (
-            warehouse["items"]
-            /
-            warehouse["capacity"]
-        ) * 100
+     utilization = (
+        warehouse["items"]
+        /
+        warehouse["capacity"]
+    ) * 100
 
 
-        response.append(
-            {
-                "warehouse": warehouse["warehouse"],
-                "items": warehouse["items"],
-                "capacity": warehouse["capacity"],
-                "utilization": round(utilization, 2)
-            }
-        )
+    if utilization >= 100:
+        status = "Over Capacity"
+
+    elif utilization >= 80:
+        status = "Near Capacity"
+
+    else:
+        status = "Available"
+
+
+
+    response.append(
+        {
+            "warehouse": warehouse["warehouse"],
+            "items": warehouse["items"],
+            "capacity": warehouse["capacity"],
+            "utilization": round(utilization, 2),
+            "status": status
+        }
+    )
 
 
     return response

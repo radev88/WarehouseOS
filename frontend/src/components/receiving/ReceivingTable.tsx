@@ -1,8 +1,47 @@
-import { mockReceiving } from "../../data/mockReceiving"
+import { useEffect, useState } from "react"
 import StatusBadge from "../common/StatusBadge"
+import { getReceiving } from "../../api/receiving"
+import type { Receiving } from "../../api/receiving"
 
 
 function ReceivingTable(){
+
+
+const [receipts,setReceipts] = useState<Receiving[]>([])
+
+
+
+useEffect(()=>{
+
+
+    async function loadReceiving(){
+
+        try{
+
+            const data = await getReceiving()
+
+            setReceipts(data)
+
+        }
+        catch(error){
+
+            console.error(
+                "Receiving error:",
+                error
+            )
+
+        }
+
+    }
+
+
+    loadReceiving()
+
+
+},[])
+
+
+
 
 return (
 
@@ -20,66 +59,94 @@ return (
 PO Number
 </th>
 
+
 <th className="p-4 text-left">
 Supplier
 </th>
+
 
 <th className="p-4 text-left">
 Date
 </th>
 
+
 <th className="p-4 text-left">
 Items
 </th>
 
+
 <th className="p-4 text-left">
 Status
 </th>
+
 
 </tr>
 
 </thead>
 
 
+
 <tbody>
 
 
-{mockReceiving.map(receipt=>(
+{receipts.map((receipt)=>(
+
 
 <tr
-key={receipt.poNumber}
+key={receipt.id}
 className="border-t hover:bg-gray-50"
 >
 
 
-<td className="p-4">
-{receipt.poNumber}
+<td className="p-4 font-medium">
+
+PO-{receipt.purchase_order_id}
+
 </td>
 
 
+
 <td className="p-4">
+
 {receipt.supplier}
+
 </td>
 
 
+
 <td className="p-4">
-{receipt.receivedDate}
+
+{
+new Date(
+receipt.received_date
+)
+.toLocaleDateString()
+
+}
+
 </td>
 
 
+
 <td className="p-4">
+
 {receipt.items}
+
 </td>
+
 
 
 <td className="p-4">
 
-<StatusBadge status={receipt.status}/>
+<StatusBadge 
+status={receipt.status}
+/>
 
 </td>
 
 
 </tr>
+
 
 ))}
 
@@ -95,5 +162,6 @@ className="border-t hover:bg-gray-50"
 )
 
 }
+
 
 export default ReceivingTable

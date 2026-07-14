@@ -1,142 +1,292 @@
 import { useEffect, useState } from "react"
+
+import {
+    getInventory,
+} from "../../api/inventory"
+
+import type {
+    InventoryItem
+} from "../../api/inventory"
+
 import StatusBadge from "../common/StatusBadge"
 
-
-interface InventoryItem {
-  sku: string
-  product: string
-  warehouse: string
-  location: string
-  quantity: number
-  status: string
-}
-
-
-function InventoryTable() {
-
-
-  const [inventory, setInventory] = useState<InventoryItem[]>([])
-
-
-  useEffect(() => {
-
-    fetch("http://127.0.0.1:8000/inventory/")
-      .then((response) => response.json())
-      .then((data) => {
-        setInventory(data)
-      })
-      .catch((error) => {
-        console.error(
-          "Inventory fetch error:",
-          error
-        )
-      })
-
-  }, [])
+import { Link } from "react-router-dom"
 
 
 
-  return (
-
-    <div className="rounded-xl border bg-white p-6 shadow-sm">
+function InventoryTable(){
 
 
-      <h2 className="text-lg font-semibold mb-4">
-        Inventory Overview
-      </h2>
-
-
-      <table className="w-full">
-
-
-        <thead>
-
-          <tr className="border-b text-left">
-
-            <th className="p-3">
-              SKU
-            </th>
-
-            <th className="p-3">
-              Product
-            </th>
-
-            <th className="p-3">
-              Warehouse
-            </th>
-
-            <th className="p-3">
-              Location
-            </th>
-
-            <th className="p-3">
-              Quantity
-            </th>
-
-            <th className="p-3">
-              Status
-            </th>
-
-          </tr>
-
-        </thead>
+    const [inventory, setInventory] =
+        useState<InventoryItem[]>([])
 
 
 
-        <tbody>
+    useEffect(() => {
 
 
-          {inventory.map((item) => (
+        async function loadInventory(){
 
-            <tr
-              key={item.sku}
-              className="border-b"
-            >
+            try{
 
-              <td className="p-3">
-                {item.sku}
-              </td>
+                const data = await getInventory()
 
+                setInventory(data)
 
-              <td className="p-3">
-                {item.product}
-              </td>
+            }
+            catch(error){
 
+                console.error(
+                    "Inventory error:",
+                    error
+                )
 
-              <td className="p-3">
-                {item.warehouse}
-              </td>
+            }
 
-
-              <td className="p-3">
-                {item.location}
-              </td>
+        }
 
 
-              <td className="p-3">
-                {item.quantity}
-              </td>
+        loadInventory()
 
 
-              <td className="p-3">
-                <StatusBadge status={item.status}/>
-              </td>
+    }, [])
 
 
-            </tr>
 
-          ))}
+    return (
+
+        <div className="
+            rounded-xl
+            border
+            bg-white
+            shadow-sm
+            overflow-hidden
+        ">
 
 
-        </tbody>
+            <div className="p-6">
+
+                <h2 className="text-lg font-semibold">
+                    Inventory Overview
+                </h2>
+
+            </div>
 
 
-      </table>
+
+            <div className="overflow-x-auto">
 
 
-    </div>
+                <table className="
+                    w-full
+                    min-w-[950px]
+                ">
 
-  )
+
+                    <thead className="bg-gray-50">
+
+
+                        <tr>
+
+
+                            <th className="p-4 text-left whitespace-nowrap">
+                                SKU
+                            </th>
+
+
+                            <th className="p-4 text-left whitespace-nowrap">
+                                Product
+                            </th>
+
+
+                            <th className="p-4 text-left whitespace-nowrap">
+                                Warehouse
+                            </th>
+
+
+                            <th className="p-4 text-left whitespace-nowrap">
+                                Location
+                            </th>
+
+
+                            <th className="p-4 text-left whitespace-nowrap">
+                                Quantity
+                            </th>
+
+
+                            <th className="p-4 text-left whitespace-nowrap">
+                                Status
+                            </th>
+
+
+                            <th className="p-4 text-left whitespace-nowrap">
+                                Actions
+                            </th>
+
+
+                        </tr>
+
+
+                    </thead>
+
+
+
+
+                    <tbody>
+
+
+                        {inventory.map((item)=>(
+
+
+                            <tr
+
+                                key={item.id}
+
+                                className="
+                                    border-t
+                                    hover:bg-gray-50
+                                "
+
+                            >
+
+
+
+                                <td className="
+                                    p-4
+                                    whitespace-nowrap
+                                ">
+                                    {item.sku}
+                                </td>
+
+
+
+                                <td className="
+                                    p-4
+                                    whitespace-nowrap
+                                ">
+                                    {item.product}
+                                </td>
+
+
+
+                                <td className="
+                                    p-4
+                                    whitespace-nowrap
+                                ">
+                                    {item.warehouse}
+                                </td>
+
+
+
+                                <td className="
+                                    p-4
+                                    whitespace-nowrap
+                                ">
+                                    {item.location}
+                                </td>
+
+
+
+                                <td className="
+                                    p-4
+                                    whitespace-nowrap
+                                ">
+                                    {item.quantity}
+                                </td>
+
+
+
+                                <td className="
+                                    p-4
+                                    whitespace-nowrap
+                                ">
+
+                                    <StatusBadge
+                                        status={item.status}
+                                    />
+
+                                </td>
+
+
+
+
+                                <td className="p-4">
+
+
+                                    <div className="
+                                        flex
+                                        gap-2
+                                        whitespace-nowrap
+                                    ">
+
+
+                                        <Link
+
+                                            to="/transfers"
+
+                                            className="
+                                                rounded
+                                                bg-slate-900
+                                                px-3
+                                                py-1
+                                                text-sm
+                                                text-white
+                                                hover:bg-slate-700
+                                            "
+
+                                        >
+                                            Transfer
+
+                                        </Link>
+
+
+
+
+                                        <Link
+
+                                            to="/adjustments"
+
+                                            className="
+                                                rounded
+                                                bg-gray-200
+                                                px-3
+                                                py-1
+                                                text-sm
+                                                hover:bg-gray-300
+                                            "
+
+                                        >
+
+                                            Adjust
+
+                                        </Link>
+
+
+                                    </div>
+
+
+                                </td>
+
+
+
+                            </tr>
+
+
+                        ))}
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+        </div>
+
+    )
 
 }
 

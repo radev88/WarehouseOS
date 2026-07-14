@@ -23,6 +23,20 @@ class Transaction(Base):
     )
 
 
+    from_location_id = Column(
+        Integer,
+        ForeignKey("locations.id"),
+        nullable=True
+    )
+
+
+    to_location_id = Column(
+        Integer,
+        ForeignKey("locations.id"),
+        nullable=True
+    )
+
+
     type = Column(
         String
     )
@@ -41,4 +55,16 @@ class Transaction(Base):
 
     product = relationship(
         "Product"
+    )
+
+
+    from_location = relationship(
+        "Location",
+        foreign_keys=[from_location_id]
+    )
+
+
+    to_location = relationship(
+        "Location",
+        foreign_keys=[to_location_id]
     )

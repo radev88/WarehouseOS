@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session, joinedload
 
 from app.database import get_db
+
 from app.models.transactions import Transaction
 
 
@@ -19,8 +20,11 @@ def get_transactions(
     results = (
         db.query(Transaction)
         .options(
-            joinedload(Transaction.product)
+            joinedload(Transaction.product),
+            joinedload(Transaction.from_location),
+            joinedload(Transaction.to_location)
         )
+        .order_by(Transaction.created_at.desc())
         .all()
     )
 
@@ -34,9 +38,23 @@ def get_transactions(
             {
                 "id": item.id,
                 "type": item.type,
-                "product": item.product.name,
+                "product": item.product.name if item.product else None,
                 "quantity": item.quantity,
-                "date": item.created_at.strftime("%m/%d/%Y")
+                "from_location": (
+                    item.from_location.code
+                    if item.from_location
+                    else None
+                ),
+                "to_location": (
+                    item.to_location.code
+                    if item.to_location
+                    else None
+                ),
+                "date": (
+                    item.created_at.strftime("%m/%d/%Y")
+                    if item.created_at
+                    else None
+                )
             }
         )
 

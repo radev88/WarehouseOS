@@ -1,47 +1,137 @@
-function PurchaseOrderSummary(){
+import { useEffect, useState } from "react"
+
+import StatusBadge from "../common/StatusBadge"
+
+import { getPurchaseOrders } from "../../api/purchaseOrders"
+import type { PurchaseOrder } from "../../api/purchaseOrders"
+
+
+
+function PurchaseOrderTable(){
+
+
+const [orders,setOrders] = useState<PurchaseOrder[]>([])
+
+
+useEffect(()=>{
+
+
+    async function loadOrders(){
+
+        try{
+
+            const data = await getPurchaseOrders()
+
+            setOrders(data)
+
+        }
+        catch(error){
+
+            console.error(
+                "Purchase order error:",
+                error
+            )
+
+        }
+
+    }
+
+
+    loadOrders()
+
+
+},[])
+
+
 
 return (
 
-<div className="grid grid-cols-3 gap-6 mb-6">
+<div className="rounded-xl border bg-white shadow-sm">
 
 
-<div className="rounded-xl border bg-white p-5">
-
-<p className="text-gray-500">
-Open Purchase Orders
-</p>
-
-<h2 className="text-3xl font-bold">
-18
-</h2>
-
-</div>
+<table className="w-full">
 
 
-<div className="rounded-xl border bg-white p-5">
+<thead className="bg-gray-50">
 
-<p className="text-gray-500">
-Awaiting Receipt
-</p>
+<tr>
 
-<h2 className="text-3xl font-bold">
-7
-</h2>
-
-</div>
+<th className="p-4 text-left">
+PO Number
+</th>
 
 
-<div className="rounded-xl border bg-white p-5">
+<th className="p-4 text-left">
+Supplier
+</th>
 
-<p className="text-gray-500">
-Suppliers
-</p>
 
-<h2 className="text-3xl font-bold">
-12
-</h2>
+<th className="p-4 text-left">
+Created
+</th>
 
-</div>
+
+<th className="p-4 text-left">
+Status
+</th>
+
+
+</tr>
+
+</thead>
+
+
+
+<tbody>
+
+
+{orders.map((po)=>(
+
+
+<tr
+key={po.id}
+className="border-t hover:bg-gray-50"
+>
+
+
+<td className="p-4 font-medium">
+PO-{po.id}
+</td>
+
+
+<td className="p-4">
+Supplier #{po.supplier_id}
+</td>
+
+
+<td className="p-4">
+
+{
+new Date(po.created_at)
+.toLocaleDateString()
+}
+
+</td>
+
+
+<td className="p-4">
+
+<StatusBadge status={po.status}/>
+
+</td>
+
+
+</tr>
+
+
+))}
+
+
+
+</tbody>
+
+
+</table>
 
 
 </div>
@@ -50,4 +140,5 @@ Suppliers
 
 }
 
-export default PurchaseOrderSummary
+
+export default PurchaseOrderTable

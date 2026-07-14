@@ -4,6 +4,8 @@ import {
   Boxes,
   Truck,
   ClipboardList,
+  ArrowRightLeft,
+  ClipboardCheck,
   BarChart3,
   Settings
 } from "lucide-react"
@@ -23,6 +25,16 @@ function Sidebar() {
       name: "Inventory",
       path: "/inventory",
       icon: Boxes
+    },
+    {
+    name: "Transfers",
+    path: "/transfers",
+    icon: ArrowRightLeft
+    },
+    {
+    name: "Adjustments",
+    path: "/adjustments",
+    icon: ClipboardCheck
     },
     {
       name: "Products",

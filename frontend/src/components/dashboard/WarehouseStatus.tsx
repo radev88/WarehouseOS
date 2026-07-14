@@ -6,6 +6,7 @@ interface WarehouseStatus {
   items: number
   capacity: number
   utilization: number
+  status: string
 }
 
 
@@ -14,22 +15,86 @@ function WarehouseStatus() {
 
   const [warehouses, setWarehouses] = useState<WarehouseStatus[]>([])
 
+  const [loading, setLoading] = useState(true)
+
+  const [error, setError] = useState("")
+
+
 
   useEffect(() => {
 
+
     fetch("http://127.0.0.1:8000/warehouses/status")
-      .then((response) => response.json())
-      .then((data) => {
-        setWarehouses(data)
+
+      .then((response) => {
+
+        if (!response.ok) {
+          throw new Error("Failed to load warehouse data")
+        }
+
+        return response.json()
+
       })
+
+      .then((data) => {
+
+        setWarehouses(data)
+
+      })
+
       .catch((error) => {
+
         console.error(
           "Warehouse status error:",
           error
         )
+
+        setError(
+          "Unable to load warehouse information"
+        )
+
       })
 
+      .finally(() => {
+
+        setLoading(false)
+
+      })
+
+
   }, [])
+
+
+
+  if (loading) {
+
+    return (
+
+      <div className="rounded-xl border bg-white p-6 shadow-sm">
+
+        Loading warehouse data...
+
+      </div>
+
+    )
+
+  }
+
+
+
+  if (error) {
+
+    return (
+
+      <div className="rounded-xl border bg-white p-6 shadow-sm text-red-500">
+
+        {error}
+
+      </div>
+
+    )
+
+  }
 
 
 
@@ -56,7 +121,6 @@ function WarehouseStatus() {
 
             <div className="flex justify-between mb-2">
 
-
               <span className="font-medium">
                 {warehouse.warehouse}
               </span>
@@ -75,9 +139,9 @@ function WarehouseStatus() {
 
 
               <div
-                className="bg-blue-600 h-3 rounded-full"
+                className="bg-blue-600 h-3 rounded-full transition-all"
                 style={{
-                  width: `${warehouse.utilization}%`
+                  width: `${Math.min(warehouse.utilization, 100)}%`
                 }}
               />
 
@@ -88,8 +152,11 @@ function WarehouseStatus() {
 
             <p className="text-sm text-gray-500 mt-2">
 
-              {warehouse.items} / {warehouse.capacity} units
+              {warehouse.items.toLocaleString()} / {warehouse.capacity.toLocaleString()} units
 
+            </p>
+            <p className="text-sm font-medium mt-1">
+              {warehouse.status}
             </p>
 
 

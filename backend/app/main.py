@@ -7,6 +7,11 @@ from app.routers import inventory
 from app.routers import dashboard
 from app.routers import warehouses
 from app.routers import transactions
+from app.routers import receiving
+from app.routers import locations
+from app.routers import adjustments
+from app.routers import purchase_orders
+from app.routers import transfers
 
 
 
@@ -33,6 +38,11 @@ app.include_router(inventory.router)
 app.include_router(dashboard.router)
 app.include_router(warehouses.router)
 app.include_router(transactions.router)
+app.include_router(receiving.router)
+app.include_router(locations.router)
+app.include_router(adjustments.router)
+app.include_router(purchase_orders.router)
+app.include_router(transfers.router)
 
 
 @app.get("/")

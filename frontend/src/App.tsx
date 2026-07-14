@@ -12,6 +12,8 @@ import Inventory from "./pages/Inventory"
 import Receiving from "./pages/Receiving"
 import PurchaseOrders from "./pages/PurchaseOrders"
 import Reports from "./pages/Reports"
+import Transfers from "./pages/Transfers"
+import Adjustments from "./pages/Adjustments"
 
 
 function App() {
@@ -49,6 +51,14 @@ function App() {
             element={<PurchaseOrders />}
           />
 
+          <Route
+            path="/transfers"
+            element={<Transfers />}
+          />
+          <Route
+            path="/adjustments"
+            element={<Adjustments />}
+          />
           <Route
             path="/reports"
             element={<Reports />}

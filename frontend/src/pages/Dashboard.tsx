@@ -7,88 +7,136 @@ import WarehouseStatus from "../components/dashboard/WarehouseStatus"
 import StatusBadge from "../components/common/StatusBadge"
 
 import { getDashboardStats } from "../api/dashboard"
-import { getInventoryStatus } from "../api/inventoryStatus"
 
 import {
   Package,
   DollarSign,
   AlertTriangle,
-  ClipboardList
+  ClipboardList,
+  Truck,
+  ArrowRightLeft,
+  Settings
 } from "lucide-react"
+
+
+
+interface DashboardStats {
+
+  total_units: number
+  total_skus: number
+  inventory_value: number
+  low_stock: number
+  out_of_stock: number
+  warehouses: number
+
+  monthly_activity: {
+    receipts: number
+    transfers: number
+    adjustments: number
+  }
+
+  top_movers: {
+    product: string
+    movement: number
+  }[]
+
+  inventoryStatus: {
+    label: string
+    count: number
+  }[]
+
+}
+
+
 
 function Dashboard() {
 
-  const [stats, setStats] = useState({
-    total_units: 0,
-    total_skus: 0,
-    low_stock: 0,
-    warehouses: 0
-  })
 
-  const [inventoryStatus, setInventoryStatus] = useState({
-    available: 0,
-    low_stock: 0,
-    out_of_stock: 0
-  })
+  const [stats, setStats] =
+    useState<DashboardStats | null>(null)
+
+
 
   useEffect(() => {
 
-    async function loadDashboard() {
 
-      try {
+    async function loadDashboard(){
 
-        const dashboard = await getDashboardStats()
+      try{
+
+        const dashboard =
+          await getDashboardStats()
+
         setStats(dashboard)
 
-        const status = await getInventoryStatus()
-        setInventoryStatus(status)
+      }
+      catch(error){
 
-      } catch (error) {
-
-        console.error("Dashboard error:", error)
+        console.error(
+          "Dashboard error:",
+          error
+        )
 
       }
 
     }
 
+
     loadDashboard()
 
-  }, [])
 
-  const inventoryStatusCards = [
-    {
-      label: "Available",
-      count: inventoryStatus.available
-    },
-    {
-      label: "Low Stock",
-      count: inventoryStatus.low_stock
-    },
-    {
-      label: "Out of Stock",
-      count: inventoryStatus.out_of_stock
-    }
-  ]
+  },[])
+
+
+
+  if(!stats){
+
+    return (
+
+      <div>
+        Loading dashboard...
+      </div>
+
+    )
+
+  }
+
+
 
   return (
 
-    <div className="space-y-8">
+    <div className="space-y-8 min-w-0">
 
-      {/* Page Header */}
+
+
       <div>
 
         <h1 className="text-3xl font-bold">
           Warehouse Dashboard
         </h1>
 
+
         <p className="text-gray-500">
           Real-time overview of warehouse operations.
         </p>
 
+
       </div>
 
+
+
+
+
       {/* KPI Cards */}
-      <div className="grid grid-cols-4 gap-6">
+
+      <div className="
+        grid
+        grid-cols-1
+        sm:grid-cols-2
+        xl:grid-cols-4
+        gap-6
+      ">
+
 
         <KPICard
           title="Products"
@@ -97,12 +145,22 @@ function Dashboard() {
           icon={Package}
         />
 
+
         <KPICard
           title="Inventory Units"
           value={stats.total_units}
-          description="Total units in stock"
+          description="Units currently stored"
+          icon={ClipboardList}
+        />
+
+
+        <KPICard
+          title="Inventory Value"
+          value={`$${stats.inventory_value.toLocaleString()}`}
+          description="Current stock value"
           icon={DollarSign}
         />
+
 
         <KPICard
           title="Low Stock"
@@ -111,63 +169,234 @@ function Dashboard() {
           icon={AlertTriangle}
         />
 
-        <KPICard
-          title="Warehouses"
-          value={stats.warehouses}
-          description="Active warehouse locations"
-          icon={ClipboardList}
-        />
 
       </div>
 
+
+
+
+
+      {/* Monthly Activity */}
+
+      <div className="
+        grid
+        grid-cols-1
+        md:grid-cols-3
+        gap-6
+      ">
+
+
+        <KPICard
+          title="Receipts"
+          value={stats.monthly_activity.receipts}
+          description="Received this month"
+          icon={Truck}
+        />
+
+
+        <KPICard
+          title="Transfers"
+          value={stats.monthly_activity.transfers}
+          description="Inventory movements"
+          icon={ArrowRightLeft}
+        />
+
+
+        <KPICard
+          title="Adjustments"
+          value={stats.monthly_activity.adjustments}
+          description="Stock corrections"
+          icon={Settings}
+        />
+
+
+      </div>
+
+
+
+
+
       {/* Warehouse Overview */}
+
       <WarehouseStatus />
 
-      {/* Inventory Status */}
-      <div className="rounded-xl border bg-white p-6 shadow-sm">
 
-        <h2 className="mb-4 text-lg font-semibold">
+
+
+
+      {/* Inventory Status */}
+
+      <div className="
+        rounded-xl
+        border
+        bg-white
+        p-6
+        shadow-sm
+      ">
+
+
+        <h2 className="text-lg font-semibold mb-4">
           Inventory Status
         </h2>
 
-        <div className="grid grid-cols-3 gap-4">
 
-          {inventoryStatusCards.map((item) => (
+
+        <div className="
+          grid
+          grid-cols-1
+          md:grid-cols-3
+          gap-4
+        ">
+
+
+          {stats.inventoryStatus.map((item)=>(
 
             <div
               key={item.label}
-              className="flex items-center justify-between rounded-lg border p-4"
+              className="
+                flex
+                items-center
+                justify-between
+                rounded-lg
+                border
+                p-4
+              "
             >
 
-              <StatusBadge status={item.label} />
+              <StatusBadge
+                status={item.label}
+              />
+
 
               <span className="text-xl font-bold">
                 {item.count}
               </span>
 
+
             </div>
 
           ))}
 
+
         </div>
+
 
       </div>
 
-      {/* Inventory + Transactions */}
-      <div className="grid grid-cols-3 gap-6">
 
-        <div className="col-span-2">
-          <InventoryTable />
-        </div>
+
+
+
+      {/* Top Moving Products */}
+
+      <div className="
+        rounded-xl
+        border
+        bg-white
+        p-6
+        shadow-sm
+        overflow-x-auto
+      ">
+
+
+        <h2 className="text-lg font-semibold mb-4">
+          Top Moving Products
+        </h2>
+
+
+
+        <table className="w-full min-w-[500px]">
+
+
+          <thead>
+
+            <tr className="border-b text-left">
+
+
+              <th className="p-3">
+                Product
+              </th>
+
+
+              <th className="p-3">
+                Movement
+              </th>
+
+
+            </tr>
+
+
+          </thead>
+
+
+
+          <tbody>
+
+
+            {stats.top_movers.map((item)=>(
+
+
+              <tr
+                key={item.product}
+                className="border-b"
+              >
+
+
+                <td className="p-3">
+                  {item.product}
+                </td>
+
+
+                <td className="p-3 font-semibold">
+                  {item.movement}
+                </td>
+
+
+              </tr>
+
+
+            ))}
+
+
+          </tbody>
+
+
+        </table>
+
+
+      </div>
+
+
+
+
+
+      {/* Inventory */}
+
+      <div className="w-full min-w-0">
+
+        <InventoryTable />
+
+      </div>
+
+
+
+
+
+      {/* Recent Transactions */}
+
+      <div className="w-full min-w-0">
 
         <TransactionList />
 
       </div>
+
+
 
     </div>
 
   )
 
 }
+
 
 export default Dashboard
