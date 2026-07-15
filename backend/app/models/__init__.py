@@ -6,3 +6,4 @@ from app.models.transactions import Transaction
 from app.models.adjustments import Adjustment
 from app.models.purchase_order import PurchaseOrder, PurchaseOrderItem
 from app.models.supplier import Supplier
+from app.models.customer import Customer

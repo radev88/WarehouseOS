@@ -12,6 +12,9 @@ from app.routers import locations
 from app.routers import adjustments
 from app.routers import purchase_orders
 from app.routers import transfers
+from app.routers import customers
+from app.routers import sales_orders
+from app.routers import reports
 
 
 
@@ -43,6 +46,10 @@ app.include_router(locations.router)
 app.include_router(adjustments.router)
 app.include_router(purchase_orders.router)
 app.include_router(transfers.router)
+app.include_router(customers.router)
+app.include_router(sales_orders.router)
+app.include_router(reports.router)
+
 
 
 @app.get("/")

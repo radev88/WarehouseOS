@@ -12,6 +12,7 @@ router = APIRouter(
 )
 
 
+
 @router.get("/")
 def get_warehouses(
     db: Session = Depends(get_db)
@@ -19,13 +20,19 @@ def get_warehouses(
 
     warehouses = db.query(Warehouse).all()
 
+
     return [
+
         {
             "id": warehouse.id,
             "name": warehouse.name
         }
+
         for warehouse in warehouses
+
     ]
+
+
 
 
 
@@ -35,67 +42,109 @@ def warehouse_status(
 ):
 
     inventory = (
+
         db.query(Inventory)
+
         .options(
-            joinedload(Inventory.location)
+            joinedload(
+                Inventory.location
+            )
         )
+
         .all()
+
     )
 
 
     warehouses = {}
 
 
+
     for item in inventory:
 
-        warehouse_name = item.location.warehouse.name
+
+        if not item.location:
+            continue
+
+
+        warehouse_name = (
+            item.location.warehouse.name
+        )
 
 
         if warehouse_name not in warehouses:
 
+
             warehouses[warehouse_name] = {
+
                 "warehouse": warehouse_name,
+
                 "items": 0,
+
                 "capacity": 1000
+
             }
+
 
 
         warehouses[warehouse_name]["items"] += item.quantity
 
 
 
+
     response = []
+
 
 
     for warehouse in warehouses.values():
 
-     utilization = (
-        warehouse["items"]
-        /
-        warehouse["capacity"]
-    ) * 100
 
+        utilization = (
 
-    if utilization >= 100:
-        status = "Over Capacity"
+            warehouse["items"]
 
-    elif utilization >= 80:
-        status = "Near Capacity"
+            /
 
-    else:
-        status = "Available"
+            warehouse["capacity"]
+
+        ) * 100
 
 
 
-    response.append(
-        {
-            "warehouse": warehouse["warehouse"],
-            "items": warehouse["items"],
-            "capacity": warehouse["capacity"],
-            "utilization": round(utilization, 2),
-            "status": status
-        }
-    )
+        if utilization >= 100:
+
+            status = "Over Capacity"
+
+
+        elif utilization >= 80:
+
+            status = "Near Capacity"
+
+
+        else:
+
+            status = "Available"
+
+
+
+        response.append(
+
+            {
+
+                "warehouse": warehouse["warehouse"],
+
+                "items": warehouse["items"],
+
+                "capacity": warehouse["capacity"],
+
+                "utilization": round(utilization,2),
+
+                "status": status
+
+            }
+
+        )
+
 
 
     return response

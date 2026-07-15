@@ -1,111 +1,218 @@
 import { useEffect, useState } from "react"
 
+import {
+    getTransactions
+} from "../../api/transactions"
 
-type Transaction = {
-  id: number
-  type: string
-  product: string
-  quantity: number
-  date: string
-}
-
-
-
-function TransactionList() {
-
-
-  const [transactions, setTransactions] = useState<Transaction[]>([])
+import type {
+    Transaction
+} from "../../api/transactions"
 
 
 
-  useEffect(() => {
+function TransactionList(){
 
-    fetch("http://127.0.0.1:8000/transactions/")
-      .then((response) => response.json())
-      .then((data) => {
 
-        setTransactions(data)
+    const [
+        transactions,
+        setTransactions
+    ] = useState<Transaction[]>([])
 
-      })
-      .catch((error) => {
 
-        console.error(
-          "Transaction fetch error:",
-          error
+
+    const [
+        loading,
+        setLoading
+    ] = useState(true)
+
+
+
+    useEffect(()=>{
+
+
+        async function loadTransactions(){
+
+            try{
+
+                const data =
+                    await getTransactions()
+
+                setTransactions(data)
+
+            }
+
+            catch(error){
+
+                console.error(
+                    "Transaction fetch error:",
+                    error
+                )
+
+            }
+
+            finally{
+
+                setLoading(false)
+
+            }
+
+        }
+
+
+        loadTransactions()
+
+
+    },[])
+
+
+
+
+    if(loading){
+
+        return (
+
+            <div className="
+                rounded-xl
+                border
+                bg-white
+                shadow-sm
+                p-5
+            ">
+
+                Loading transactions...
+
+            </div>
+
         )
 
-      })
-
-  }, [])
+    }
 
 
 
-  return (
 
-    <div className="rounded-xl border bg-white shadow-sm">
+    return (
 
-
-      <div className="border-b p-5">
-
-        <h2 className="text-lg font-semibold">
-          Recent Transactions
-        </h2>
-
-      </div>
+        <div className="
+            rounded-xl
+            border
+            bg-white
+            shadow-sm
+            overflow-hidden
+        ">
 
 
+            <div className="
+                border-b
+                p-5
+            ">
 
-      <div>
+                <h2 className="text-lg font-semibold">
+
+                    Recent Transactions
+
+                </h2>
+
+            </div>
 
 
-        {transactions.map((transaction) => (
-
-          <div
-            key={transaction.id}
-            className="flex justify-between border-b p-4"
-          >
 
 
             <div>
 
-              <p className="font-medium">
-                {transaction.product}
-              </p>
+
+            {
+                transactions.map((transaction,index)=>(
 
 
-              <p className="text-sm text-gray-500">
-                {transaction.type} • {transaction.date}
-              </p>
+                    <div
+
+                        key={transaction.id}
+
+                        className={`
+                            flex
+                            justify-between
+                            p-4
+                            ${
+                                index !== transactions.length - 1
+                                ? "border-b"
+                                : ""
+                            }
+                        `}
+
+                    >
+
+
+                        <div>
+
+
+                            <p className="font-medium">
+
+                                {transaction.product}
+
+                            </p>
+
+
+                            <p className="text-sm text-gray-500">
+
+                                {transaction.type} • {transaction.date}
+
+                            </p>
+
+
+                        </div>
+
+
+
+
+                        <div
+
+                            className={
+
+                                transaction.quantity > 0
+
+                                ?
+
+                                "text-green-600 font-semibold"
+
+                                :
+
+                                "text-red-600 font-semibold"
+
+                            }
+
+                        >
+
+
+                            {
+                                transaction.quantity > 0
+                                ?
+                                "+"
+                                :
+                                ""
+                            }
+
+
+                            {transaction.quantity}
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+                ))
+
+            }
+
 
             </div>
 
 
+        </div>
 
-            <div
-              className={
-                transaction.quantity > 0
-                ? "text-green-600 font-semibold"
-                : "text-red-600 font-semibold"
-              }
-            >
-
-              {transaction.quantity > 0 ? "+" : ""}
-              {transaction.quantity}
-
-            </div>
-
-
-          </div>
-
-        ))}
-
-
-      </div>
-
-
-    </div>
-
-  )
+    )
 
 }
 

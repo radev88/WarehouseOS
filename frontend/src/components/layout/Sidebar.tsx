@@ -7,6 +7,7 @@ import {
   ArrowRightLeft,
   ClipboardCheck,
   BarChart3,
+  ShoppingCart,
   Settings
 } from "lucide-react"
 
@@ -50,6 +51,11 @@ function Sidebar() {
       name: "Purchase Orders",
       path: "/purchase-orders",
       icon: ClipboardList
+    },
+    {
+    name: "Sales Orders",
+    path: "/sales-orders",
+    icon: ShoppingCart
     },
     {
       name: "Reports",

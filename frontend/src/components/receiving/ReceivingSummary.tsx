@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react"
 
+import KPICard from "../dashboard/KPICard"
+
+import {
+    PackageCheck,
+    Clock,
+    CheckCircle
+} from "lucide-react"
+
 import {
     getReceivingSummary
 } from "../../api/receivingSummary"
@@ -9,102 +17,109 @@ import {
 function ReceivingSummary(){
 
 
-const [summary,setSummary] =
-useState({
+    const [
+        summary,
+        setSummary
+    ] = useState({
 
-    open_receipts: 0,
+        open_receipts:0,
 
-    pending_receipts: 0,
+        pending_receipts:0,
 
-    completed_receipts: 0
+        completed_receipts:0
 
-})
-
-
-
-useEffect(()=>{
+    })
 
 
-    async function loadSummary(){
 
-        try{
-
-            const data =
-            await getReceivingSummary()
+    useEffect(()=>{
 
 
-            setSummary(data)
+        async function loadSummary(){
+
+            try{
+
+                const data =
+                    await getReceivingSummary()
+
+                setSummary(data)
+
+            }
+
+            catch(error){
+
+                console.error(
+                    "Receiving summary error:",
+                    error
+                )
+
+            }
 
         }
 
-        catch(error){
 
-            console.error(
-                "Receiving summary error:",
-                error
-            )
-
-        }
-
-    }
+        loadSummary()
 
 
-    loadSummary()
-
-
-},[])
+    },[])
 
 
 
-return (
 
-<div className="grid grid-cols-3 gap-6 mb-6">
+    return (
 
-
-<div className="rounded-xl border bg-white p-5">
-
-<p className="text-gray-500">
-Open Receipts
-</p>
-
-<h2 className="text-3xl font-bold">
-{summary.open_receipts}
-</h2>
-
-</div>
+        <div className="
+            grid
+            grid-cols-3
+            gap-6
+            mb-6
+        ">
 
 
+            <KPICard
 
-<div className="rounded-xl border bg-white p-5">
+                title="Open Receipts"
 
-<p className="text-gray-500">
-Pending Receipt
-</p>
+                value={summary.open_receipts}
 
-<h2 className="text-3xl font-bold">
-{summary.pending_receipts}
-</h2>
+                description="Waiting for receiving"
 
-</div>
+                icon={PackageCheck}
+
+            />
 
 
 
-<div className="rounded-xl border bg-white p-5">
+            <KPICard
 
-<p className="text-gray-500">
-Completed Receipts
-</p>
+                title="Pending Receipt"
 
-<h2 className="text-3xl font-bold">
-{summary.completed_receipts}
-</h2>
+                value={summary.pending_receipts}
 
-</div>
+                description="Awaiting inspection"
+
+                icon={Clock}
+
+            />
 
 
-</div>
 
-)
+            <KPICard
+
+                title="Completed Receipts"
+
+                value={summary.completed_receipts}
+
+                description="Successfully received"
+
+                icon={CheckCircle}
+
+            />
+
+
+        </div>
+
+    )
 
 }
 

@@ -14,6 +14,8 @@ import PurchaseOrders from "./pages/PurchaseOrders"
 import Reports from "./pages/Reports"
 import Transfers from "./pages/Transfers"
 import Adjustments from "./pages/Adjustments"
+import SalesOrders from "./pages/SalesOrders"
+import SalesOrderDetails from "./pages/SalesOrderDetails"
 
 
 function App() {
@@ -50,7 +52,17 @@ function App() {
             path="/purchase-orders"
             element={<PurchaseOrders />}
           />
+          
+          <Route
+            path="/sales-orders/:id"
+            element={<SalesOrderDetails />}
+          />
 
+          <Route
+            path="/sales-orders"
+            element={<SalesOrders />}
+          />
+          
           <Route
             path="/transfers"
             element={<Transfers />}

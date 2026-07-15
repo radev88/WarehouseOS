@@ -1,107 +1,189 @@
-import { mockPurchaseOrders } from "../../data/mockPurchaseOrders"
+import { useEffect, useState } from "react"
+
 import StatusBadge from "../common/StatusBadge"
+
+import {
+    getPurchaseOrders
+} from "../../api/purchaseOrders"
+
+import type {
+    PurchaseOrder
+} from "../../api/purchaseOrders"
+
 
 
 function PurchaseOrderTable(){
 
-return (
 
-<div className="rounded-xl border bg-white shadow-sm">
-
-
-<table className="w-full">
-
-
-<thead className="bg-gray-50">
-
-<tr>
-
-<th className="p-4 text-left">
-PO Number
-</th>
-
-<th className="p-4 text-left">
-Supplier
-</th>
-
-<th className="p-4 text-left">
-Order Date
-</th>
-
-<th className="p-4 text-left">
-Expected
-</th>
-
-<th className="p-4 text-left">
-Items
-</th>
-
-<th className="p-4 text-left">
-Status
-</th>
-
-</tr>
-
-</thead>
+    const [
+        orders,
+        setOrders
+    ] = useState<PurchaseOrder[]>([])
 
 
-<tbody>
 
-{mockPurchaseOrders.map((po)=>(
-
-<tr
-key={po.poNumber}
-className="border-t hover:bg-gray-50"
->
+    useEffect(()=>{
 
 
-<td className="p-4 font-medium">
-{po.poNumber}
-</td>
+        async function loadOrders(){
+
+            try{
+
+                const data =
+                    await getPurchaseOrders()
 
 
-<td className="p-4">
-{po.supplier}
-</td>
+                setOrders(data)
+
+            }
+
+            catch(error){
+
+                console.error(
+                    "Purchase order error:",
+                    error
+                )
+
+            }
+
+        }
 
 
-<td className="p-4">
-{po.orderDate}
-</td>
+        loadOrders()
 
 
-<td className="p-4">
-{po.expectedDate}
-</td>
+    },[])
 
 
-<td className="p-4">
-{po.totalItems}
-</td>
 
 
-<td className="p-4">
 
-<StatusBadge status={po.status}/>
+    return (
 
-</td>
-
-
-</tr>
-
-))}
+        <div className="rounded-xl border bg-white shadow-sm">
 
 
-</tbody>
+            <table className="w-full">
 
 
-</table>
+                <thead className="bg-gray-50">
 
 
-</div>
+                    <tr>
 
-)
+
+                        <th className="p-4 text-left">
+                            PO Number
+                        </th>
+
+
+                        <th className="p-4 text-left">
+                            Supplier
+                        </th>
+
+
+                        <th className="p-4 text-left">
+                            Created
+                        </th>
+
+
+                        <th className="p-4 text-left">
+                            Status
+                        </th>
+
+
+                    </tr>
+
+
+                </thead>
+
+
+
+
+
+                <tbody>
+
+
+                {
+                    orders.map((po)=>(
+
+
+                        <tr
+
+                            key={po.id}
+
+                            className="
+                            border-t
+                            hover:bg-gray-50
+                            "
+
+                        >
+
+
+
+                            <td className="p-4 font-medium">
+
+                                PO-{po.id}
+
+                            </td>
+
+
+
+
+                            <td className="p-4">
+
+                                Supplier #{po.supplier_id}
+
+                            </td>
+
+
+
+
+                            <td className="p-4">
+
+                                {
+                                    new Date(
+                                        po.created_at
+                                    ).toLocaleDateString()
+                                }
+
+                            </td>
+
+
+
+
+                            <td className="p-4">
+
+                                <StatusBadge
+                                    status={po.status}
+                                />
+
+                            </td>
+
+
+
+                        </tr>
+
+
+                    ))
+                }
+
+
+
+                </tbody>
+
+
+
+            </table>
+
+
+
+        </div>
+
+    )
 
 }
+
+
 
 export default PurchaseOrderTable

@@ -1,144 +1,147 @@
 import { useEffect, useState } from "react"
 
-import StatusBadge from "../common/StatusBadge"
+import KPICard from "../dashboard/KPICard"
 
-import { getPurchaseOrders } from "../../api/purchaseOrders"
-import type { PurchaseOrder } from "../../api/purchaseOrders"
+import {
+    ClipboardList,
+    Clock,
+    CheckCircle
+} from "lucide-react"
+
+import {
+    getPurchaseOrders
+} from "../../api/purchaseOrders"
+
+import type {
+    PurchaseOrder
+} from "../../api/purchaseOrders"
 
 
 
-function PurchaseOrderTable(){
+function PurchaseOrderSummary(){
 
 
-const [orders,setOrders] = useState<PurchaseOrder[]>([])
+    const [
+        orders,
+        setOrders
+    ] = useState<PurchaseOrder[]>([])
 
 
-useEffect(()=>{
+
+    useEffect(()=>{
 
 
-    async function loadOrders(){
+        async function loadOrders(){
 
-        try{
+            try{
 
-            const data = await getPurchaseOrders()
+                const data =
+                    await getPurchaseOrders()
 
-            setOrders(data)
+                setOrders(data)
+
+            }
+
+            catch(error){
+
+                console.error(
+                    "Purchase order summary error:",
+                    error
+                )
+
+            }
 
         }
-        catch(error){
-
-            console.error(
-                "Purchase order error:",
-                error
-            )
-
-        }
-
-    }
 
 
-    loadOrders()
+        loadOrders()
 
 
-},[])
+    },[])
 
 
 
-return (
-
-<div className="rounded-xl border bg-white shadow-sm">
-
-
-<table className="w-full">
-
-
-<thead className="bg-gray-50">
-
-<tr>
-
-<th className="p-4 text-left">
-PO Number
-</th>
-
-
-<th className="p-4 text-left">
-Supplier
-</th>
-
-
-<th className="p-4 text-left">
-Created
-</th>
-
-
-<th className="p-4 text-left">
-Status
-</th>
-
-
-</tr>
-
-</thead>
+    const totalOrders =
+        orders.length
 
 
 
-<tbody>
-
-
-{orders.map((po)=>(
-
-
-<tr
-key={po.id}
-className="border-t hover:bg-gray-50"
->
-
-
-<td className="p-4 font-medium">
-PO-{po.id}
-</td>
-
-
-<td className="p-4">
-Supplier #{po.supplier_id}
-</td>
-
-
-<td className="p-4">
-
-{
-new Date(po.created_at)
-.toLocaleDateString()
-}
-
-</td>
-
-
-<td className="p-4">
-
-<StatusBadge status={po.status}/>
-
-</td>
-
-
-</tr>
-
-
-))}
+    const openOrders =
+        orders.filter(
+            (order)=>
+                order.status === "OPEN" ||
+                order.status === "Open"
+        ).length
 
 
 
-</tbody>
+    const completedOrders =
+        orders.filter(
+            (order)=>
+                order.status === "COMPLETED" ||
+                order.status === "Completed"
+        ).length
 
 
-</table>
 
 
-</div>
 
-)
+    return (
+
+        <div className="
+            grid
+            grid-cols-3
+            gap-6
+            mb-6
+        ">
+
+
+            <KPICard
+
+                title="Total Purchase Orders"
+
+                value={totalOrders}
+
+                description="All supplier orders"
+
+                icon={ClipboardList}
+
+            />
+
+
+
+            <KPICard
+
+                title="Open Orders"
+
+                value={openOrders}
+
+                description="Awaiting completion"
+
+                icon={Clock}
+
+            />
+
+
+
+            <KPICard
+
+                title="Completed Orders"
+
+                value={completedOrders}
+
+                description="Finished purchase orders"
+
+                icon={CheckCircle}
+
+            />
+
+
+        </div>
+
+    )
 
 }
 
 
-export default PurchaseOrderTable
+export default PurchaseOrderSummary

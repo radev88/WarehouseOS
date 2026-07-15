@@ -4,17 +4,31 @@ import axios from "axios"
 const API_URL = "http://localhost:8000"
 
 
-export interface Warehouse {
-    id: number
-    name: string
+
+export interface WarehouseStatus {
+
+    warehouse: string
+
+    items: number
+
+    capacity: number
+
+    utilization: number
+
+    status: string
+
 }
 
 
-export const getWarehouses = async () => {
 
-    const response = await axios.get<Warehouse[]>(
-        `${API_URL}/warehouses/`
-    )
+export async function getWarehouseStatus(){
+
+    const response =
+        await axios.get<WarehouseStatus[]>(
+            `${API_URL}/warehouses/status`
+        )
+
 
     return response.data
+
 }
