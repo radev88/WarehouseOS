@@ -15,6 +15,7 @@ from app.routers import transfers
 from app.routers import customers
 from app.routers import sales_orders
 from app.routers import reports
+from app.routers import auth
 
 
 
@@ -49,6 +50,7 @@ app.include_router(transfers.router)
 app.include_router(customers.router)
 app.include_router(sales_orders.router)
 app.include_router(reports.router)
+app.include_router(auth.router)
 
 
 
