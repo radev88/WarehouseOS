@@ -12,6 +12,8 @@ from app.models.purchase_order import (
 
 from app.schemas.receiving import ReceivingCreate
 
+from app.security.permissions import require_role
+
 
 router = APIRouter(
     prefix="/receiving",
@@ -19,14 +21,27 @@ router = APIRouter(
 )
 
 
+
 @router.get("/")
 def get_receiving_history(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(
+        require_role(
+            [
+                "Admin",
+                "Manager",
+                "Warehouse User"
+            ]
+        )
+    )
 ):
 
     orders = (
+
         db.query(PurchaseOrder)
+
         .all()
+
     )
 
 
@@ -62,12 +77,24 @@ def get_receiving_history(
 
 @router.get("/summary")
 def receiving_summary(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(
+        require_role(
+            [
+                "Admin",
+                "Manager",
+                "Warehouse User"
+            ]
+        )
+    )
 ):
 
     orders = (
+
         db.query(PurchaseOrder)
+
         .all()
+
     )
 
 
@@ -78,8 +105,8 @@ def receiving_summary(
     completed_receipts = 0
 
 
-
     for order in orders:
+
 
         if order.status in [
             "Open",
@@ -115,24 +142,42 @@ def receiving_summary(
 @router.post("/")
 def receive_inventory(
     receiving: ReceivingCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(
+        require_role(
+            [
+                "Admin",
+                "Manager",
+                "Warehouse User"
+            ]
+        )
+    )
 ):
 
     purchase_order = (
+
         db.query(PurchaseOrder)
+
         .filter(
+
             PurchaseOrder.id ==
             receiving.purchase_order_id
+
         )
+
         .first()
+
     )
 
 
     if not purchase_order:
 
         raise HTTPException(
+
             status_code=404,
+
             detail="Purchase Order not found"
+
         )
 
 
@@ -141,37 +186,52 @@ def receive_inventory(
 
 
         purchase_item = (
+
             db.query(PurchaseOrderItem)
+
             .filter(
+
                 PurchaseOrderItem.purchase_order_id ==
                 receiving.purchase_order_id,
 
                 PurchaseOrderItem.product_id ==
                 item.product_id
+
             )
+
             .first()
+
         )
 
 
         if not purchase_item:
 
             raise HTTPException(
+
                 status_code=404,
+
                 detail="Product not found in purchase order"
+
             )
 
 
 
         inventory = (
+
             db.query(Inventory)
+
             .filter(
+
                 Inventory.product_id ==
                 item.product_id,
 
                 Inventory.location_id ==
                 receiving.location_id
+
             )
+
             .first()
+
         )
 
 
@@ -243,12 +303,12 @@ def receive_inventory(
 
     if all_received:
 
-        purchase_order.status = "COMPLETED"
+        purchase_order.status = "Completed"
 
 
     elif any_received:
 
-        purchase_order.status = "PARTIALLY RECEIVED"
+        purchase_order.status = "Partially Received"
 
 
     else:
@@ -263,13 +323,12 @@ def receive_inventory(
 
     return {
 
-        "message":
-        "Inventory received successfully",
+        "message": "Inventory received successfully",
 
-        "purchase_order_id":
-        purchase_order.id,
+        "purchase_order_id": purchase_order.id,
 
-        "status":
-        purchase_order.status
+        "status": purchase_order.status,
+
+        "received_by": current_user.email
 
     }

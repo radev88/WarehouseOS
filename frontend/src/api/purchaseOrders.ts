@@ -1,7 +1,4 @@
-import axios from "axios"
-
-
-const API_URL = "http://localhost:8000"
+import client from "./client"
 
 
 
@@ -21,9 +18,12 @@ export interface PurchaseOrder {
 
 export async function getPurchaseOrders(){
 
-    const response = await axios.get<PurchaseOrder[]>(
-        `${API_URL}/purchase-orders/`
-    )
+
+    const response =
+        await client.get<PurchaseOrder[]>(
+            "/purchase-orders/"
+        )
+
 
     return response.data
 

@@ -8,6 +8,9 @@ from app.models.inventory import Inventory
 from app.models.purchase_order import PurchaseOrder
 from app.models.transactions import Transaction
 from app.models.product import Product
+from app.models.user import User
+
+from app.security.dependencies import get_current_user
 
 
 router = APIRouter(
@@ -16,9 +19,11 @@ router = APIRouter(
 )
 
 
+
 @router.get("/summary")
 def reports_summary(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
 
     inventory_value = (
@@ -57,9 +62,7 @@ def reports_summary(
 
     open_receipts = (
 
-        db.query(
-            PurchaseOrder
-        )
+        db.query(PurchaseOrder)
 
         .filter(
             PurchaseOrder.status == "OPEN"
@@ -72,9 +75,7 @@ def reports_summary(
 
     quality_holds = (
 
-        db.query(
-            Inventory
-        )
+        db.query(Inventory)
 
         .filter(
             Inventory.quantity < 100
@@ -101,7 +102,8 @@ def reports_summary(
 
 @router.get("/inventory-status")
 def inventory_status(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
 
     inventory = (
@@ -115,6 +117,7 @@ def inventory_status(
     low_stock = 0
 
     out_of_stock = 0
+
 
 
     for item in inventory:
@@ -158,7 +161,8 @@ def inventory_status(
 
 @router.get("/inventory-category")
 def inventory_category(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
 
     inventory = (
@@ -213,7 +217,8 @@ def inventory_category(
 
 @router.get("/supplier-activity")
 def supplier_activity(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
 
     results = (
@@ -245,9 +250,7 @@ def supplier_activity(
 
         order = (
 
-            db.query(
-                PurchaseOrder
-            )
+            db.query(PurchaseOrder)
 
             .options(
                 joinedload(
@@ -287,7 +290,8 @@ def supplier_activity(
 
 @router.get("/recent-activity")
 def recent_activity(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
 
     transactions = (

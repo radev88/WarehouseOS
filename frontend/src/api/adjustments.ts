@@ -1,7 +1,4 @@
-import axios from "axios"
-
-
-const API_URL = "http://localhost:8000"
+import client from "./client"
 
 
 
@@ -23,13 +20,12 @@ export async function createAdjustment(
     data: AdjustmentCreate
 ){
 
-    const response = await axios.post(
 
-        `${API_URL}/adjustments/`,
-
-        data
-
-    )
+    const response =
+        await client.post(
+            "/adjustments/",
+            data
+        )
 
 
     return response.data

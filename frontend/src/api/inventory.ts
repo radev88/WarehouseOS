@@ -1,7 +1,4 @@
-import axios from "axios"
-
-
-const API_URL = "http://localhost:8000"
+import client from "./client"
 
 
 
@@ -27,10 +24,11 @@ export interface InventoryItem {
 
 export async function getInventory(){
 
+
     const response =
-    await axios.get<InventoryItem[]>(
-        `${API_URL}/inventory/`
-    )
+        await client.get<InventoryItem[]>(
+            "/inventory/"
+        )
 
 
     return response.data

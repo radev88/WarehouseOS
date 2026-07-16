@@ -1,10 +1,15 @@
 import {
   BrowserRouter,
   Routes,
-  Route
+  Route,
+  Navigate
 } from "react-router-dom"
 
+
 import MainLayout from "./components/layout/MainLayout"
+
+import ProtectedRoute from "./components/auth/ProtectedRoute"
+
 
 import Dashboard from "./pages/Dashboard"
 import Products from "./pages/Products"
@@ -16,74 +21,206 @@ import Transfers from "./pages/Transfers"
 import Adjustments from "./pages/Adjustments"
 import SalesOrders from "./pages/SalesOrders"
 import SalesOrderDetails from "./pages/SalesOrderDetails"
+import Login from "./pages/Login"
+import Users from "./pages/Users"
 
 
-function App() {
+import { isAuthenticated } from "./api/auth"
 
-  return (
 
-    <BrowserRouter>
 
-      <MainLayout>
+function ProtectedRoutes(){
 
-        <Routes>
 
-          <Route 
-            path="/"
-            element={<Dashboard />}
-          />
+    if(!isAuthenticated()){
 
-          <Route
-            path="/products"
-            element={<Products />}
-          />
+        return (
 
-          <Route
-            path="/inventory"
-            element={<Inventory />}
-          />
+            <Navigate
+                to="/login"
+                replace
+            />
 
-          <Route
-            path="/receiving"
-            element={<Receiving />}
-          />
+        )
 
-          <Route
-            path="/purchase-orders"
-            element={<PurchaseOrders />}
-          />
-          
-          <Route
-            path="/sales-orders/:id"
-            element={<SalesOrderDetails />}
-          />
+    }
 
-          <Route
-            path="/sales-orders"
-            element={<SalesOrders />}
-          />
-          
-          <Route
-            path="/transfers"
-            element={<Transfers />}
-          />
-          <Route
-            path="/adjustments"
-            element={<Adjustments />}
-          />
-          <Route
-            path="/reports"
-            element={<Reports />}
-          />
 
-        </Routes>
 
-      </MainLayout>
+    return (
 
-    </BrowserRouter>
+        <MainLayout>
 
-  )
+            <Routes>
+
+
+                <Route
+                    path="/"
+                    element={
+                        <Dashboard />
+                    }
+                />
+
+
+
+                <Route
+                    path="/products"
+                    element={
+                        <Products />
+                    }
+                />
+
+
+
+                <Route
+                    path="/inventory"
+                    element={
+                        <Inventory />
+                    }
+                />
+
+
+
+                <Route
+                    path="/receiving"
+                    element={
+                        <Receiving />
+                    }
+                />
+
+
+
+                <Route
+                    path="/purchase-orders"
+                    element={
+                        <PurchaseOrders />
+                    }
+                />
+
+
+
+                <Route
+                    path="/sales-orders/:id"
+                    element={
+                        <SalesOrderDetails />
+                    }
+                />
+
+
+
+                <Route
+                    path="/sales-orders"
+                    element={
+                        <SalesOrders />
+                    }
+                />
+
+
+
+                <Route
+                    path="/transfers"
+                    element={
+                        <Transfers />
+                    }
+                />
+
+
+
+                <Route
+                    path="/adjustments"
+                    element={
+                        <Adjustments />
+                    }
+                />
+
+
+
+                <Route
+                    path="/users"
+                    element={
+                        <ProtectedRoute
+                            allowedRoles={[
+                                "Admin"
+                            ]}
+                        >
+
+                            <Users />
+
+                        </ProtectedRoute>
+                    }
+                />
+
+
+
+                <Route
+                    path="/reports"
+                    element={
+                        <Reports />
+                    }
+                />
+
+
+
+                <Route
+                    path="*"
+                    element={
+                        <Navigate
+                            to="/"
+                            replace
+                        />
+                    }
+                />
+
+
+            </Routes>
+
+
+        </MainLayout>
+
+    )
 
 }
+
+
+
+
+
+function App(){
+
+
+    return (
+
+        <BrowserRouter>
+
+
+            <Routes>
+
+
+                <Route
+                    path="/login"
+                    element={
+                        <Login />
+                    }
+                />
+
+
+
+                <Route
+                    path="/*"
+                    element={
+                        <ProtectedRoutes />
+                    }
+                />
+
+
+            </Routes>
+
+
+        </BrowserRouter>
+
+    )
+
+}
+
 
 export default App

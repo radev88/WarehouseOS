@@ -2,8 +2,11 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session, joinedload
 
 from app.database import get_db
+
 from app.models.warehouse import Warehouse
 from app.models.inventory import Inventory
+
+from app.security.dependencies import get_current_user
 
 
 router = APIRouter(
@@ -15,7 +18,8 @@ router = APIRouter(
 
 @router.get("/")
 def get_warehouses(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
 
     warehouses = db.query(Warehouse).all()
@@ -38,7 +42,8 @@ def get_warehouses(
 
 @router.get("/status")
 def warehouse_status(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
 
     inventory = (
@@ -137,7 +142,7 @@ def warehouse_status(
 
                 "capacity": warehouse["capacity"],
 
-                "utilization": round(utilization,2),
+                "utilization": round(utilization, 2),
 
                 "status": status
 

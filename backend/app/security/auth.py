@@ -1,11 +1,15 @@
+import os
 from datetime import datetime, timedelta
 
-from jose import JWTError, jwt
+import bcrypt
 
-from passlib.context import CryptContext
+from jose import jwt
 
 
-SECRET_KEY = "CHANGE_THIS_LATER"
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    "warehouseos-development-secret-key"
+)
 
 ALGORITHM = "HS256"
 
@@ -13,47 +17,61 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 
 
-pwd_context = CryptContext(
-    schemes=["bcrypt"],
-    deprecated="auto"
-)
-
-
-
 def hash_password(password: str):
 
-    return pwd_context.hash(password)
+    password_bytes = password.encode("utf-8")
+
+    salt = bcrypt.gensalt()
+
+    hashed = bcrypt.hashpw(
+        password_bytes,
+        salt
+    )
+
+    return hashed.decode("utf-8")
 
 
 
 def verify_password(
-    plain_password,
-    hashed_password
+    plain_password: str,
+    hashed_password: str
 ):
 
-    return pwd_context.verify(
-        plain_password,
-        hashed_password
+    return bcrypt.checkpw(
+        plain_password.encode("utf-8"),
+        hashed_password.encode("utf-8")
     )
 
 
 
-def create_access_token(data: dict):
+def create_access_token(
+    data: dict,
+    expires_delta: timedelta | None = None
+):
 
     to_encode = data.copy()
 
+    expire = (
 
-    expire = datetime.utcnow() + timedelta(
-        minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+        datetime.utcnow()
+
+        + (
+
+            expires_delta
+
+            if expires_delta
+
+            else timedelta(
+                minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+            )
+
+        )
+
     )
-
 
     to_encode.update(
-        {
-            "exp": expire
-        }
+        {"exp": expire}
     )
-
 
     return jwt.encode(
         to_encode,

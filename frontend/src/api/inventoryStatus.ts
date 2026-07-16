@@ -1,23 +1,25 @@
-import axios from "axios"
+import client from "./client"
 
-
-const API_URL = "http://localhost:8000"
 
 
 export interface InventoryStatus {
 
-    available: number
-    low_stock: number
-    out_of_stock: number
+    name: string
+
+    value: number
 
 }
 
 
-export const getInventoryStatus = async () => {
 
-    const response = await axios.get<InventoryStatus>(
-        `${API_URL}/inventory/status-summary`
-    )
+export async function getInventoryStatus(){
+
+
+    const response =
+        await client.get<InventoryStatus[]>(
+            "/reports/inventory-status"
+        )
+
 
     return response.data
 

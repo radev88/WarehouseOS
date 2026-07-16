@@ -10,6 +10,8 @@ from app.schemas.customer import (
     CustomerResponse
 )
 
+from app.security.permissions import require_role
+
 
 router = APIRouter(
     prefix="/customers",
@@ -18,14 +20,33 @@ router = APIRouter(
 
 
 
-@router.get("/", response_model=list[CustomerResponse])
+@router.get(
+    "/",
+    response_model=list[CustomerResponse]
+)
 def get_customers(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(
+        require_role(
+            [
+                "Admin",
+                "Manager",
+                "Warehouse User"
+            ]
+        )
+    )
 ):
 
     customers = (
+
         db.query(Customer)
+
+        .order_by(
+            Customer.name.asc()
+        )
+
         .all()
+
     )
 
 
@@ -33,18 +54,34 @@ def get_customers(
 
 
 
-@router.get("/{customer_id}", response_model=CustomerResponse)
+@router.get(
+    "/{customer_id}",
+    response_model=CustomerResponse
+)
 def get_customer(
     customer_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(
+        require_role(
+            [
+                "Admin",
+                "Manager",
+                "Warehouse User"
+            ]
+        )
+    )
 ):
 
     customer = (
+
         db.query(Customer)
+
         .filter(
             Customer.id == customer_id
         )
+
         .first()
+
     )
 
 
@@ -60,10 +97,21 @@ def get_customer(
 
 
 
-@router.post("/", response_model=CustomerResponse)
+@router.post(
+    "/",
+    response_model=CustomerResponse
+)
 def create_customer(
     customer: CustomerCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(
+        require_role(
+            [
+                "Admin",
+                "Manager"
+            ]
+        )
+    )
 ):
 
     new_customer = Customer(
@@ -98,19 +146,34 @@ def create_customer(
 
 
 
-@router.put("/{customer_id}", response_model=CustomerResponse)
+@router.put(
+    "/{customer_id}",
+    response_model=CustomerResponse
+)
 def update_customer(
     customer_id: int,
     data: CustomerCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(
+        require_role(
+            [
+                "Admin",
+                "Manager"
+            ]
+        )
+    )
 ):
 
     customer = (
+
         db.query(Customer)
+
         .filter(
             Customer.id == customer_id
         )
+
         .first()
+
     )
 
 
@@ -123,13 +186,21 @@ def update_customer(
 
 
     customer.name = data.name
+
     customer.contact = data.contact
+
     customer.email = data.email
+
     customer.phone = data.phone
+
     customer.address = data.address
+
     customer.city = data.city
+
     customer.state = data.state
+
     customer.zip_code = data.zip_code
+
 
 
     db.commit()
@@ -141,18 +212,31 @@ def update_customer(
 
 
 
-@router.delete("/{customer_id}")
+@router.delete(
+    "/{customer_id}"
+)
 def delete_customer(
     customer_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(
+        require_role(
+            [
+                "Admin"
+            ]
+        )
+    )
 ):
 
     customer = (
+
         db.query(Customer)
+
         .filter(
             Customer.id == customer_id
         )
+
         .first()
+
     )
 
 

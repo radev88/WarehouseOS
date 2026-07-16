@@ -1,7 +1,4 @@
-import axios from "axios"
-
-
-const API_URL = "http://localhost:8000"
+import client from "./client"
 
 
 
@@ -23,10 +20,12 @@ export async function createTransfer(
     data: TransferCreate
 ){
 
-    const response = await axios.post(
-        `${API_URL}/transfers/`,
-        data
-    )
+
+    const response =
+        await client.post(
+            "/transfers/",
+            data
+        )
 
 
     return response.data

@@ -1,7 +1,4 @@
-import axios from "axios"
-
-
-const API_URL = "http://localhost:8000"
+import client from "./client"
 
 
 
@@ -23,9 +20,10 @@ export interface Transaction {
 
 export async function getTransactions(){
 
+
     const response =
-        await axios.get<Transaction[]>(
-            `${API_URL}/transactions/`
+        await client.get<Transaction[]>(
+            "/transactions/"
         )
 
 

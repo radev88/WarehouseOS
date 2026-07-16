@@ -40,7 +40,8 @@ class User(Base):
 
     role = Column(
         String,
-        default="employee"
+        nullable=False,
+        default="Warehouse User"
     )
 
 

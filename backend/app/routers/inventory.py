@@ -5,6 +5,8 @@ from app.database import get_db
 from app.models.inventory import Inventory
 from app.schemas.inventory import InventoryResponse
 
+from app.security.dependencies import get_current_user
+
 
 router = APIRouter(
     prefix="/inventory",
@@ -17,7 +19,8 @@ router = APIRouter(
     response_model=list[InventoryResponse]
 )
 def get_inventory(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
 
     results = (
@@ -60,7 +63,8 @@ def get_inventory(
 
 @router.get("/status-summary")
 def get_inventory_status_summary(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
 
     results = db.query(Inventory).all()

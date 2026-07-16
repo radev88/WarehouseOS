@@ -8,82 +8,163 @@ import {
   ClipboardCheck,
   BarChart3,
   ShoppingCart,
-  Settings
+  Settings,
+  Users
 } from "lucide-react"
 
 import { NavLink } from "react-router-dom"
 
+import { getUserRole } from "../../api/auth"
+
+
 
 function Sidebar() {
+
+
+  const role = getUserRole()
+
+
 
   const menuItems = [
     {
       name: "Dashboard",
       path: "/",
-      icon: LayoutDashboard
+      icon: LayoutDashboard,
+      roles: [
+        "Admin",
+        "Manager",
+        "Warehouse User",
+        "Viewer"
+      ]
     },
     {
       name: "Inventory",
       path: "/inventory",
-      icon: Boxes
+      icon: Boxes,
+      roles: [
+        "Admin",
+        "Manager",
+        "Warehouse User",
+        "Viewer"
+      ]
     },
     {
-    name: "Transfers",
-    path: "/transfers",
-    icon: ArrowRightLeft
+      name: "Transfers",
+      path: "/transfers",
+      icon: ArrowRightLeft,
+      roles: [
+        "Admin",
+        "Manager",
+        "Warehouse User"
+      ]
     },
     {
-    name: "Adjustments",
-    path: "/adjustments",
-    icon: ClipboardCheck
+      name: "Adjustments",
+      path: "/adjustments",
+      icon: ClipboardCheck,
+      roles: [
+        "Admin",
+        "Manager"
+      ]
     },
     {
       name: "Products",
       path: "/products",
-      icon: Package
+      icon: Package,
+      roles: [
+        "Admin",
+        "Manager",
+        "Warehouse User",
+        "Viewer"
+      ]
     },
     {
       name: "Receiving",
       path: "/receiving",
-      icon: Truck
+      icon: Truck,
+      roles: [
+        "Admin",
+        "Manager",
+        "Warehouse User"
+      ]
     },
     {
       name: "Purchase Orders",
       path: "/purchase-orders",
-      icon: ClipboardList
+      icon: ClipboardList,
+      roles: [
+        "Admin",
+        "Manager"
+      ]
     },
     {
-    name: "Sales Orders",
-    path: "/sales-orders",
-    icon: ShoppingCart
+      name: "Sales Orders",
+      path: "/sales-orders",
+      icon: ShoppingCart,
+      roles: [
+        "Admin",
+        "Manager",
+        "Warehouse User"
+      ]
     },
     {
       name: "Reports",
       path: "/reports",
-      icon: BarChart3
+      icon: BarChart3,
+      roles: [
+        "Admin",
+        "Manager",
+        "Warehouse User",
+        "Viewer"
+      ]
     },
     {
       name: "Settings",
       path: "/settings",
-      icon: Settings
+      icon: Settings,
+      roles: [
+        "Admin"
+      ]
+    },
+    {
+      name: "Users",
+      path: "/users",
+      icon: Users,
+      roles: [
+        "Admin"
+      ]
     }
   ]
+
+
+
+  const visibleItems = menuItems.filter(
+    (item) =>
+      role &&
+      item.roles.includes(role)
+  )
+
 
 
   return (
 
     <aside className="w-64 min-h-screen bg-slate-900 text-white p-6">
 
+
       <h1 className="text-2xl font-bold mb-10">
         WarehouseOS
       </h1>
 
 
+
       <nav className="space-y-2">
 
-        {menuItems.map((item) => {
+
+        {visibleItems.map((item) => {
+
 
           const Icon = item.icon
+
 
           return (
 
@@ -110,9 +191,11 @@ function Sidebar() {
 
               <Icon size={20}/>
 
+
               <span>
                 {item.name}
               </span>
+
 
             </NavLink>
 
@@ -120,7 +203,9 @@ function Sidebar() {
 
         })}
 
+
       </nav>
+
 
     </aside>
 

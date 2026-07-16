@@ -1,7 +1,4 @@
-import axios from "axios"
-
-
-const API_URL = "http://localhost:8000"
+import client from "./client"
 
 
 
@@ -29,7 +26,6 @@ export interface DashboardStats {
     }[]
 
 
-
     monthly_activity: {
 
         receipts: number
@@ -39,7 +35,6 @@ export interface DashboardStats {
         adjustments: number
 
     }
-
 
 
     top_movers: {
@@ -54,12 +49,15 @@ export interface DashboardStats {
 
 
 
-export const getDashboardStats = async (): Promise<DashboardStats> => {
+export const getDashboardStats = async () => {
 
 
-    const response = await axios.get<DashboardStats>(
-        `${API_URL}/dashboard/summary`
-    )
+    const response =
+        await client.get<DashboardStats>(
+
+            "/dashboard/summary"
+
+        )
 
 
     return response.data

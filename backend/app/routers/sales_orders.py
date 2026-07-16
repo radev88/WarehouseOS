@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import func
 
 from app.database import get_db
 
@@ -19,6 +18,8 @@ from app.schemas.sales_order import (
     SalesOrderResponse
 )
 
+from app.security.permissions import require_role
+
 
 router = APIRouter(
     prefix="/sales-orders",
@@ -27,11 +28,18 @@ router = APIRouter(
 
 
 
-@router.get(
-    "/summary"
-)
+@router.get("/summary")
 def sales_order_summary(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(
+        require_role(
+            [
+                "Admin",
+                "Manager",
+                "Warehouse User"
+            ]
+        )
+    )
 ):
 
     open_orders = (
@@ -70,13 +78,21 @@ def sales_order_summary(
 
 
 
-
 @router.get(
     "/",
     response_model=list[SalesOrderResponse]
 )
 def get_sales_orders(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(
+        require_role(
+            [
+                "Admin",
+                "Manager",
+                "Warehouse User"
+            ]
+        )
+    )
 ):
 
     orders = (
@@ -84,6 +100,9 @@ def get_sales_orders(
         .options(
             joinedload(SalesOrder.items),
             joinedload(SalesOrder.customer)
+        )
+        .order_by(
+            SalesOrder.id.desc()
         )
         .all()
     )
@@ -93,15 +112,22 @@ def get_sales_orders(
 
 
 
-
-
 @router.get(
     "/{order_id}",
     response_model=SalesOrderResponse
 )
 def get_sales_order(
     order_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(
+        require_role(
+            [
+                "Admin",
+                "Manager",
+                "Warehouse User"
+            ]
+        )
+    )
 ):
 
     order = (
@@ -128,15 +154,21 @@ def get_sales_order(
 
 
 
-
-
 @router.post(
     "/",
     response_model=SalesOrderResponse
 )
 def create_sales_order(
     data: SalesOrderCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(
+        require_role(
+            [
+                "Admin",
+                "Manager"
+            ]
+        )
+    )
 ):
 
     customer = (
@@ -222,14 +254,19 @@ def create_sales_order(
 
 
 
-
-
-@router.post(
-    "/{order_id}/pick"
-)
+@router.post("/{order_id}/pick")
 def pick_sales_order(
     order_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(
+        require_role(
+            [
+                "Admin",
+                "Manager",
+                "Warehouse User"
+            ]
+        )
+    )
 ):
 
     order = (
@@ -252,16 +289,6 @@ def pick_sales_order(
         )
 
 
-
-    if order.status == "FULFILLED":
-
-        raise HTTPException(
-            status_code=400,
-            detail="Order already fulfilled"
-        )
-
-
-
     for item in order.items:
 
         inventory = (
@@ -277,21 +304,17 @@ def pick_sales_order(
 
             raise HTTPException(
                 status_code=400,
-                detail=f"No inventory found for product {item.product_id}"
+                detail="Inventory not found"
             )
-
 
 
         if inventory.quantity < item.quantity:
 
             raise HTTPException(
                 status_code=400,
-                detail=f"Insufficient inventory for product {item.product_id}. Available: {inventory.quantity}"
+                detail="Insufficient inventory"
             )
 
-
-
-    for item in order.items:
 
         item.picked_quantity = item.quantity
 
@@ -315,14 +338,18 @@ def pick_sales_order(
 
 
 
-
-
-@router.post(
-    "/{order_id}/fulfill"
-)
+@router.post("/{order_id}/fulfill")
 def fulfill_sales_order(
     order_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(
+        require_role(
+            [
+                "Admin",
+                "Manager"
+            ]
+        )
+    )
 ):
 
     order = (
@@ -345,18 +372,7 @@ def fulfill_sales_order(
         )
 
 
-
-    if order.status == "FULFILLED":
-
-        raise HTTPException(
-            status_code=400,
-            detail="Order already fulfilled"
-        )
-
-
-
     for item in order.items:
-
 
         inventory = (
             db.query(Inventory)
@@ -371,22 +387,20 @@ def fulfill_sales_order(
 
             raise HTTPException(
                 status_code=400,
-                detail=f"No inventory found for product {item.product_id}"
+                detail="Inventory not found"
             )
-
 
 
         if inventory.quantity < item.quantity:
 
             raise HTTPException(
                 status_code=400,
-                detail=f"Insufficient inventory for product {item.product_id}. Available: {inventory.quantity}"
+                detail="Insufficient inventory"
             )
 
 
 
     for item in order.items:
-
 
         inventory = (
             db.query(Inventory)
@@ -420,11 +434,11 @@ def fulfill_sales_order(
 
 
 
-    order.status = "FULFILLED"
-
+    order.status = "Fulfilled"
 
 
     db.commit()
+
 
 
     return {

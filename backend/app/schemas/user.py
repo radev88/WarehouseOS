@@ -9,6 +9,8 @@ class UserCreate(BaseModel):
 
     password: str
 
+    role: str = "Warehouse User"
+
 
 
 class UserLogin(BaseModel):
@@ -16,6 +18,16 @@ class UserLogin(BaseModel):
     email: EmailStr
 
     password: str
+
+
+
+class UserUpdate(BaseModel):
+
+    username: str
+
+    email: EmailStr
+
+    role: str
 
 
 
@@ -41,3 +53,9 @@ class Token(BaseModel):
     access_token: str
 
     token_type: str
+
+    username: str
+
+    email: str
+
+    role: str

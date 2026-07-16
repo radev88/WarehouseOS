@@ -1,7 +1,4 @@
-import axios from "axios"
-
-
-const API_URL = "http://localhost:8000"
+import client from "./client"
 
 
 
@@ -25,9 +22,11 @@ export interface Receiving {
 
 export async function getReceiving(){
 
-    const response = await axios.get<Receiving[]>(
-        `${API_URL}/receiving/`
-    )
+
+    const response =
+        await client.get<Receiving[]>(
+            "/receiving/"
+        )
 
 
     return response.data

@@ -19,7 +19,6 @@ from app.security.auth import (
 )
 
 
-
 router = APIRouter(
     prefix="/auth",
     tags=["Authentication"]
@@ -37,15 +36,11 @@ def register(
 ):
 
     existing_user = (
-
         db.query(User)
-
         .filter(
             User.email == user.email
         )
-
         .first()
-
     )
 
 
@@ -65,7 +60,9 @@ def register(
 
         hashed_password=hash_password(
             user.password
-        )
+        ),
+
+        role="Warehouse User"
 
     )
 
@@ -91,15 +88,11 @@ def login(
 ):
 
     db_user = (
-
         db.query(User)
-
         .filter(
             User.email == user.email
         )
-
         .first()
-
     )
 
 
@@ -122,7 +115,6 @@ def login(
         )
 
 
-
     token = create_access_token(
         {
             "sub": db_user.email
@@ -134,6 +126,12 @@ def login(
 
         "access_token": token,
 
-        "token_type": "bearer"
+        "token_type": "bearer",
+
+        "username": db_user.username,
+
+        "email": db_user.email,
+
+        "role": db_user.role
 
     }

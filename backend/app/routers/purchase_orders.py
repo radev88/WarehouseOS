@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.database import get_db
 
@@ -10,6 +10,8 @@ from app.models.purchase_order import (
 
 from app.schemas.purchase_order import PurchaseOrderCreate
 
+from app.security.permissions import require_role
+
 
 router = APIRouter(
     prefix="/purchase-orders",
@@ -17,14 +19,43 @@ router = APIRouter(
 )
 
 
+
 @router.get("/")
 def get_purchase_orders(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(
+        require_role(
+            [
+                "Admin",
+                "Manager",
+                "Warehouse User"
+            ]
+        )
+    )
 ):
 
     orders = (
+
         db.query(PurchaseOrder)
+
+        .options(
+
+            joinedload(
+                PurchaseOrder.supplier
+            ),
+
+            joinedload(
+                PurchaseOrder.items
+            )
+
+        )
+
+        .order_by(
+            PurchaseOrder.created_at.desc()
+        )
+
         .all()
+
     )
 
 
@@ -32,9 +63,21 @@ def get_purchase_orders(
 
         {
             "id": order.id,
+
+            "supplier": (
+                order.supplier.name
+                if order.supplier
+                else "Unknown"
+            ),
+
             "supplier_id": order.supplier_id,
+
             "status": order.status,
+
+            "items": len(order.items),
+
             "created_at": order.created_at
+
         }
 
         for order in orders
@@ -46,12 +89,23 @@ def get_purchase_orders(
 @router.post("/")
 def create_purchase_order(
     data: PurchaseOrderCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(
+        require_role(
+            [
+                "Admin",
+                "Manager"
+            ]
+        )
+    )
 ):
 
     purchase_order = PurchaseOrder(
+
         supplier_id=data.supplier_id,
+
         status="OPEN"
+
     )
 
 
@@ -77,6 +131,7 @@ def create_purchase_order(
 
         )
 
+
         db.add(order_item)
 
 
@@ -89,6 +144,8 @@ def create_purchase_order(
 
         "message": "Purchase order created",
 
-        "purchase_order_id": purchase_order.id
+        "purchase_order_id": purchase_order.id,
+
+        "created_by": current_user.email
 
     }

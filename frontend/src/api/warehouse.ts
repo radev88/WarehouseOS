@@ -1,7 +1,4 @@
-import axios from "axios"
-
-
-const API_URL = "http://localhost:8000"
+import client from "./client"
 
 
 
@@ -23,9 +20,10 @@ export interface WarehouseStatus {
 
 export async function getWarehouseStatus(){
 
+
     const response =
-        await axios.get<WarehouseStatus[]>(
-            `${API_URL}/warehouses/status`
+        await client.get<WarehouseStatus[]>(
+            "/warehouses/status"
         )
 
 

@@ -5,6 +5,8 @@ from app.database import get_db
 
 from app.models.transactions import Transaction
 
+from app.security.dependencies import get_current_user
+
 
 router = APIRouter(
     prefix="/transactions",
@@ -14,7 +16,8 @@ router = APIRouter(
 
 @router.get("/")
 def get_transactions(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
 
     results = (
@@ -38,7 +41,11 @@ def get_transactions(
             {
                 "id": item.id,
                 "type": item.type,
-                "product": item.product.name if item.product else None,
+                "product": (
+                    item.product.name
+                    if item.product
+                    else None
+                ),
                 "quantity": item.quantity,
                 "from_location": (
                     item.from_location.code
