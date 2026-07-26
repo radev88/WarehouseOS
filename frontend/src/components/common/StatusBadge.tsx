@@ -21,9 +21,9 @@ function StatusBadge({
 
 
 
-            case "OPEN":
+            case "Open":
 
-                return "bg-gray-100 text-gray-700"
+                return "bg-green-100 text-green-700"
 
 
 
@@ -33,15 +33,21 @@ function StatusBadge({
 
 
 
-            case "READY TO SHIP":
+            case "Ready To Ship":
 
                 return "bg-blue-100 text-blue-700"
 
 
 
-            case "FULFILLED":
+            case "Fulfilled":
 
                 return "bg-green-100 text-green-700"
+
+
+
+            case "Near Capacity":
+
+                return "bg-yellow-100 text-yellow-700"
 
 
 
@@ -54,6 +60,12 @@ function StatusBadge({
             case "Pending Inspection":
 
                 return "bg-purple-100 text-purple-700"
+
+
+
+            case "Over Capacity":
+
+                return "bg-red-100 text-red-700"
 
 
 

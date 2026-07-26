@@ -45,7 +45,7 @@ def sales_order_summary(
     open_orders = (
         db.query(SalesOrder)
         .filter(
-            SalesOrder.status == "OPEN"
+            SalesOrder.status == "Open"
         )
         .count()
     )
@@ -54,7 +54,7 @@ def sales_order_summary(
     pending_shipment = (
         db.query(SalesOrder)
         .filter(
-            SalesOrder.status == "READY TO SHIP"
+            SalesOrder.status == "Ready to Ship"
         )
         .count()
     )
@@ -320,7 +320,7 @@ def pick_sales_order(
 
 
 
-    order.status = "READY TO SHIP"
+    order.status = "Ready to Ship"
 
 
     db.commit()

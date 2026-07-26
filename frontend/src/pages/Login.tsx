@@ -1,6 +1,12 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
+import {
+    Boxes,
+    ClipboardCheck,
+    BarChart3
+} from "lucide-react"
+
 import { login } from "../api/auth"
 
 
@@ -11,13 +17,34 @@ function Login(){
     const navigate = useNavigate()
 
 
-    const [email, setEmail] = useState("")
 
-    const [password, setPassword] = useState("")
+    const [
+        email,
+        setEmail
+    ] = useState("")
 
-    const [error, setError] = useState("")
 
-    const [loading, setLoading] = useState(false)
+
+    const [
+        password,
+        setPassword
+    ] = useState("")
+
+
+
+    const [
+        error,
+        setError
+    ] = useState("")
+
+
+
+    const [
+        loading,
+        setLoading
+    ] = useState(false)
+
+
 
 
 
@@ -25,12 +52,14 @@ function Login(){
         e: React.FormEvent
     ){
 
+
         e.preventDefault()
 
 
         setError("")
 
         setLoading(true)
+
 
 
         try {
@@ -48,7 +77,10 @@ function Login(){
             navigate("/")
 
 
-        } catch {
+        }
+
+
+        catch {
 
 
             setError(
@@ -56,7 +88,10 @@ function Login(){
             )
 
 
-        } finally {
+        }
+
+
+        finally {
 
 
             setLoading(false)
@@ -64,106 +99,106 @@ function Login(){
 
         }
 
+
     }
+
+
 
 
 
     return (
 
-        <div className="min-h-screen flex items-center justify-center bg-slate-100">
-
-
-            <div className="bg-white p-8 rounded-lg shadow-md w-96">
-
-
-                <h1 className="text-2xl font-bold mb-6 text-center">
-
-                    WarehouseOS Login
-
-                </h1>
+        <div className="
+            min-h-screen
+            bg-slate-900
+            flex
+            items-center
+            justify-center
+            p-6
+        ">
 
 
 
-                {error && (
+            <div className="
+                w-full
+                max-w-md
+            ">
 
-                    <p className="text-red-500 mb-4 text-sm">
 
-                        {error}
+
+
+                {/* Branding */}
+
+
+                <div className="
+                    text-center
+                    mb-8
+                ">
+
+
+                    <h1 className="
+                        text-5xl
+                        font-bold
+                        text-white
+                        mb-3
+                    ">
+
+                        WarehouseOS
+
+                    </h1>
+
+
+
+                    <p className="
+                        text-slate-300
+                    ">
+
+                        Enterprise Warehouse Management Platform
 
                     </p>
 
-                )}
+
+                </div>
 
 
 
-                <form onSubmit={handleSubmit}>
 
 
-                    <div className="mb-4">
+                {/* Login Card */}
 
 
-                        <label className="block text-sm font-medium mb-1">
-
-                            Email
-
-                        </label>
-
-
-
-                        <input
-
-                            className="border rounded-md p-2 w-full"
-
-                            type="email"
-
-                            value={email}
-
-                            onChange={
-                                (e) =>
-                                setEmail(
-                                    e.target.value
-                                )
-                            }
-
-                            required
-
-                        />
-
-
-                    </div>
-
+                <div className="
+                    bg-white
+                    rounded-xl
+                    shadow-xl
+                    border
+                    p-8
+                ">
 
 
 
                     <div className="mb-6">
 
 
-                        <label className="block text-sm font-medium mb-1">
+                        <h2 className="
+                            text-2xl
+                            font-bold
+                            text-slate-900
+                        ">
 
-                            Password
+                            Welcome back
 
-                        </label>
+                        </h2>
 
 
+                        <p className="
+                            text-gray-500
+                            mt-2
+                        ">
 
-                        <input
+                            Sign in to access your warehouse operations.
 
-                            className="border rounded-md p-2 w-full"
-
-                            type="password"
-
-                            value={password}
-
-                            onChange={
-                                (e) =>
-                                setPassword(
-                                    e.target.value
-                                )
-                            }
-
-                            required
-
-                        />
+                        </p>
 
 
                     </div>
@@ -171,35 +206,246 @@ function Login(){
 
 
 
-                    <button
 
-                        type="submit"
+                    {error && (
 
-                        disabled={loading}
+                        <div className="
+                            bg-red-50
+                            text-red-600
+                            text-sm
+                            rounded-lg
+                            p-3
+                            mb-5
+                        ">
 
-                        className="
-                        w-full
-                        bg-slate-900
-                        text-white
-                        py-2
-                        rounded-md
-                        hover:bg-slate-700
-                        disabled:opacity-50
-                        "
+                            {error}
 
-                    >
+                        </div>
 
-                        {
-                            loading
-                            ? "Logging in..."
-                            : "Login"
-                        }
-
-                    </button>
+                    )}
 
 
 
-                </form>
+
+
+
+
+                    <form onSubmit={handleSubmit}>
+
+
+                        <div className="mb-5">
+
+
+                            <label className="
+                                block
+                                text-sm
+                                font-medium
+                                mb-2
+                            ">
+
+                                Email
+
+                            </label>
+
+
+
+
+                            <input
+
+                                type="email"
+
+                                value={email}
+
+                                onChange={
+                                    (e)=>
+                                    setEmail(
+                                        e.target.value
+                                    )
+                                }
+
+                                className="
+                                    w-full
+                                    border
+                                    rounded-lg
+                                    px-4
+                                    py-3
+                                    focus:outline-none
+                                    focus:ring-2
+                                    focus:ring-slate-900
+                                "
+
+                                required
+
+                            />
+
+
+                        </div>
+
+
+
+
+
+
+
+                        <div className="mb-6">
+
+
+                            <label className="
+                                block
+                                text-sm
+                                font-medium
+                                mb-2
+                            ">
+
+                                Password
+
+                            </label>
+
+
+
+
+
+                            <input
+
+                                type="password"
+
+                                value={password}
+
+                                onChange={
+                                    (e)=>
+                                    setPassword(
+                                        e.target.value
+                                    )
+                                }
+
+                                className="
+                                    w-full
+                                    border
+                                    rounded-lg
+                                    px-4
+                                    py-3
+                                    focus:outline-none
+                                    focus:ring-2
+                                    focus:ring-slate-900
+                                "
+
+                                required
+
+                            />
+
+
+                        </div>
+
+
+
+
+
+
+
+                        <button
+
+                            type="submit"
+
+                            disabled={loading}
+
+                            className="
+                                w-full
+                                bg-slate-900
+                                text-white
+                                py-3
+                                rounded-lg
+                                font-semibold
+                                hover:bg-slate-700
+                                transition
+                                disabled:opacity-50
+                            "
+
+                        >
+
+                            {
+                                loading
+                                ? "Signing in..."
+                                : "Sign In"
+                            }
+
+
+                        </button>
+
+
+
+                    </form>
+
+
+
+                </div>
+
+
+
+
+
+
+
+                {/* Feature Footer */}
+
+
+                <div className="
+                    mt-8
+                    flex
+                    justify-center
+                    gap-6
+                    text-slate-300
+                    text-sm
+                ">
+
+
+
+                    <div className="
+                        flex
+                        items-center
+                        gap-2
+                    ">
+
+                        <Boxes size={16}/>
+
+                        Inventory
+
+                    </div>
+
+
+
+
+
+                    <div className="
+                        flex
+                        items-center
+                        gap-2
+                    ">
+
+                        <ClipboardCheck size={16}/>
+
+                        Receiving
+
+                    </div>
+
+
+
+
+
+                    <div className="
+                        flex
+                        items-center
+                        gap-2
+                    ">
+
+                        <BarChart3 size={16}/>
+
+                        Analytics
+
+                    </div>
+
+
+
+                </div>
 
 
 

@@ -214,7 +214,12 @@ def dashboard_summary(
 
         .filter(
 
-            PurchaseOrder.status == "Open"
+            PurchaseOrder.status.in_(
+                [
+                    "Open",
+                    "Created"
+                ]
+            )
 
         )
 
@@ -379,8 +384,11 @@ def dashboard_summary(
         "total_products": total_products,
 
         "inventory_value": round(
+
             inventory_value,
+
             2
+
         ),
 
         "low_stock": low_stock,

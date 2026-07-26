@@ -5,6 +5,7 @@ from app.database import get_db
 
 from app.models.warehouse import Warehouse
 from app.models.inventory import Inventory
+from app.models.location import Location
 
 from app.security.dependencies import get_current_user
 
@@ -46,6 +47,13 @@ def warehouse_status(
     current_user = Depends(get_current_user)
 ):
 
+
+    warehouses = (
+        db.query(Warehouse)
+        .all()
+    )
+
+
     inventory = (
 
         db.query(Inventory)
@@ -61,7 +69,23 @@ def warehouse_status(
     )
 
 
-    warehouses = {}
+
+    warehouse_units = {}
+
+
+
+    for warehouse in warehouses:
+
+        warehouse_units[warehouse.id] = {
+
+            "warehouse": warehouse.name,
+
+            "units": 0,
+
+            "capacity": warehouse.capacity or 0
+
+        }
+
 
 
 
@@ -69,30 +93,23 @@ def warehouse_status(
 
 
         if not item.location:
+
             continue
 
 
-        warehouse_name = (
-            item.location.warehouse.name
+
+        warehouse_id = (
+            item.location.warehouse_id
         )
 
 
-        if warehouse_name not in warehouses:
+
+        if warehouse_id in warehouse_units:
 
 
-            warehouses[warehouse_name] = {
-
-                "warehouse": warehouse_name,
-
-                "items": 0,
-
-                "capacity": 1000
-
-            }
-
-
-
-        warehouses[warehouse_name]["items"] += item.quantity
+            warehouse_units[warehouse_id]["units"] += (
+                item.quantity
+            )
 
 
 
@@ -101,18 +118,27 @@ def warehouse_status(
 
 
 
-    for warehouse in warehouses.values():
+    for warehouse in warehouse_units.values():
 
 
-        utilization = (
+        if warehouse["capacity"] > 0:
 
-            warehouse["items"]
 
-            /
+            utilization = (
 
-            warehouse["capacity"]
+                warehouse["units"]
 
-        ) * 100
+                /
+
+                warehouse["capacity"]
+
+            ) * 100
+
+
+        else:
+
+            utilization = 0
+
 
 
 
@@ -132,17 +158,21 @@ def warehouse_status(
 
 
 
+
         response.append(
 
             {
 
                 "warehouse": warehouse["warehouse"],
 
-                "items": warehouse["items"],
+                "units": warehouse["units"],
 
                 "capacity": warehouse["capacity"],
 
-                "utilization": round(utilization, 2),
+                "utilization": round(
+                    utilization,
+                    2
+                ),
 
                 "status": status
 

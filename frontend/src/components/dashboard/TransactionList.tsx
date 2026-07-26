@@ -192,7 +192,7 @@ function TransactionList(){
                             }
 
 
-                            {transaction.quantity}
+                            {transaction.quantity.toLocaleString()}
 
 
                         </div>

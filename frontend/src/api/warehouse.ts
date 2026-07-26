@@ -6,7 +6,7 @@ export interface WarehouseStatus {
 
     warehouse: string
 
-    items: number
+    units: number
 
     capacity: number
 

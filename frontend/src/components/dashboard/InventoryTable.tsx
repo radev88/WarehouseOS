@@ -191,7 +191,7 @@ function InventoryTable(){
                                     p-4
                                     whitespace-nowrap
                                 ">
-                                    {item.quantity}
+                                    {item.quantity.toLocaleString()}
                                 </td>
 
 
