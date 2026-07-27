@@ -112,15 +112,16 @@ PostgreSQL
 ---
 
 ## Screenshots
+
 - Dashboard
 <img width="1668" height="938" alt="Screenshot 2026-07-26 at 11 04 30 PM" src="https://github.com/user-attachments/assets/cf4e9cb3-82f7-4437-afec-e8980a4ddfd7" />
----
+
 - Inventory Management
 <img width="1668" height="938" alt="Screenshot 2026-07-26 at 11 04 53 PM" src="https://github.com/user-attachments/assets/652a1ed5-01c1-47da-bb68-dfd5ce3d9ba1" />
----
+
 - Warehouse Overview
 <img width="1668" height="938" alt="Screenshot 2026-07-26 at 11 05 23 PM" src="https://github.com/user-attachments/assets/a39a93f0-7afe-44d3-96ea-661cb85b4733" />
----
+
 - User Management
 <img width="1668" height="938" alt="Screenshot 2026-07-26 at 11 05 34 PM" src="https://github.com/user-attachments/assets/ed4d9262-a536-47d8-ad62-99f65d0299c7" />
 
