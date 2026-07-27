@@ -1,236 +1,96 @@
 # WarehouseOS
 
-![WarehouseOS Banner](https://via.placeholder.com/1200x400?text=WarehouseOS)
+## Warehouse Management System (WMS)
 
-## Full-Stack Warehouse Management System (WMS)
+WarehouseOS is a full-stack warehouse management platform designed to provide real-time visibility into inventory operations, warehouse activity, and operational workflows.
 
-WarehouseOS is a full-stack warehouse management platform designed to streamline inventory operations, order fulfillment, receiving processes, and warehouse workflows.
+The project simulates an enterprise WMS environment with inventory tracking, warehouse operations, user management, and operational dashboards.
 
-The application provides an ERP-style experience with inventory visibility, transaction tracking, purchase and sales order management, and role-based access control.
-
-Built to simulate the type of operational software used by modern logistics, manufacturing, and distribution companies.
+Built as a portfolio project to demonstrate full-stack development, database design, ERP/WMS concepts, and business-focused software solutions.
 
 ---
 
-# Features
+## Features
 
-## Authentication & Security
+### Dashboard
 
-- JWT-based authentication
-- Protected application routes
+- Real-time inventory overview
+- Inventory value tracking
+- Low stock monitoring
+- Warehouse utilization overview
+- Monthly warehouse activity metrics
+- Top moving products
+- Recent transactions
+
+---
+
+### Inventory Management
+
+- Inventory visibility by warehouse and location
+- SKU tracking
+- Inventory status monitoring
+- Stock quantity management
+- Inventory search and filtering
+
+---
+
+### Warehouse Operations
+
+- Inventory transfers between locations
+- Inventory adjustments
+- Transaction history tracking
+- Warehouse capacity monitoring
+
+---
+
+### Product Management
+
+- Product master data management
+- SKU information
+- Warehouse product visibility
+- Packaging materials and finished goods support
+
+---
+
+### User Management
+
 - Role-based access control
-- User permission management
+- User administration
+- System permission management
 
 Supported roles:
 
-- **Admin**
-  - Full system access
-  - User management
-  - Inventory adjustments
-  - Purchase order management
-
-- **Manager**
-  - Operational management access
-  - Inventory workflows
-  - Orders and receiving
-
-- **Warehouse User**
-  - Inventory operations
-  - Transfers
-  - Receiving
-  - Sales order processing
-
-- **Viewer**
-  - Dashboard and reporting access
+- Admin
+- Manager
+- Warehouse User
+- Viewer
 
 ---
 
-# Inventory Management
+## Technology Stack
 
-WarehouseOS provides real-time inventory tracking capabilities:
-
-- Product inventory visibility
-- Warehouse/location tracking
-- Stock adjustments
-- Inventory transfers
-- Transaction history
-- Low stock monitoring
-
----
-
-# Purchasing & Receiving
-
-Manage inbound inventory workflows:
-
-- Create purchase orders
-- Track order status
-- Receive inventory
-- Update inventory automatically
-- Record receiving transactions
-
----
-
-# Sales Order Management
-
-Support outbound warehouse operations:
-
-- Create sales orders
-- Manage customer orders
-- Pick inventory
-- Fulfill shipments
-- Track order status
-
----
-
-# Dashboard & Reporting
-
-Operational dashboard providing:
-
-- Inventory metrics
-- Inventory value
-- Stock alerts
-- Warehouse overview
-- Transaction activity
-- Top moving products
-
----
-
-# Technology Stack
-
-## Frontend
+### Frontend
 
 - React
 - TypeScript
 - Vite
 - Tailwind CSS
 - React Router
-- Axios
 - Lucide Icons
 
-## Backend
+### Backend
 
 - FastAPI
 - Python
-- SQLAlchemy ORM
+- SQLAlchemy
 - PostgreSQL
-- JWT Authentication
-- Pydantic
 
-## Development Tools
+### Development Tools
 
-- Git
-- GitHub
+- Git / GitHub
 - VS Code
-- PostgreSQL
 - DBeaver
 
 ---
 
-# System Architecture
-
-```
-                 React + TypeScript
-                        |
-                        |
-                    REST API
-                        |
-                        |
-                 FastAPI Backend
-                        |
-                        |
-                  SQLAlchemy ORM
-                        |
-                        |
-                  PostgreSQL DB
-```
-
----
-
-# Database Design
-
-Core entities:
-
-- Users
-- Roles
-- Products
-- Warehouses
-- Locations
-- Inventory
-- Transactions
-- Suppliers
-- Purchase Orders
-- Customers
-- Sales Orders
-
-The database structure follows ERP-style relational modeling principles.
-
----
-
-# Project Structure
-
-```
-WarehouseOS
-│
-├── backend
-│   └── app
-│       ├── models
-│       ├── schemas
-│       ├── routers
-│       ├── security
-│       └── database
-│
-├── frontend
-│   └── src
-│       ├── components
-│       ├── pages
-│       ├── api
-│       └── layouts
-│
-└── README.md
-```
-
----
-
-# Future Improvements
-
-Planned enhancements:
-
-- Cloud deployment
-- Barcode scanning support
-- Inventory cycle counting
-- Advanced reporting
-- Audit history
-- Email notifications
-- Multi-company SaaS support
-
----
-
-# About
-
-WarehouseOS was developed as a full-stack software engineering project combining:
-
-- Warehouse operations knowledge
-- ERP workflow design
-- Database architecture
-- Modern web development
-
-The goal was to build a realistic business application that demonstrates how software can improve operational efficiency and inventory visibility.
-
----
-
-## Author
-
-**Rubén Alejandro Dávila**
-
-Computer Science Student  
-Full-Stack Developer | ERP & Operations Systems
-
-Skills:
-- React
-- TypeScript
-- Python
-- FastAPI
-- PostgreSQL
-- SQL
-- ERP Systems
-- Inventory Operations
+## Architecture
