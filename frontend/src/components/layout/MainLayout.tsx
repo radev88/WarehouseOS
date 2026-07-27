@@ -15,7 +15,8 @@ function MainLayout({
     <div
       className="
         flex
-        min-h-screen
+        h-screen
+        overflow-hidden
         bg-slate-50
       "
     >
@@ -46,6 +47,7 @@ function MainLayout({
         <section
           className="
             flex-1
+            overflow-y-auto
             p-6
             lg:p-8
           "

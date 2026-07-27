@@ -1,31 +1,73 @@
 import ProductToolbar from "../components/products/ProductToolbar"
 import ProductTable from "../components/products/ProductTable"
 
+
+
 function Products(){
 
-return (
 
-<div>
+    return (
 
-
-<h1 className="text-3xl font-bold">
-Product Master
-</h1>
-
-
-<p className="mt-2 mb-8 text-gray-500">
-Manage pharmaceutical packaging materials and finished goods.
-</p>
+        <div
+            className="
+                space-y-6
+            "
+        >
 
 
-<ProductToolbar />
+            {/* Page Header */}
 
-<ProductTable />
+            <div>
 
 
-</div>
+                <h1
+                    className="
+                        text-3xl
+                        font-bold
+                        text-slate-800
+                    "
+                >
 
-)
+                    Product Master
+
+                </h1>
+
+
+                <p
+                    className="
+                        mt-2
+                        text-slate-500
+                    "
+                >
+
+                    Manage pharmaceutical packaging materials, finished goods, and inventory master data.
+
+                </p>
+
+
+            </div>
+
+
+
+
+
+            {/* Toolbar */}
+
+            <ProductToolbar />
+
+
+
+
+
+            {/* Product Table */}
+
+            <ProductTable />
+
+
+
+        </div>
+
+    )
 
 }
 

@@ -22,6 +22,7 @@ import Adjustments from "./pages/Adjustments"
 import SalesOrders from "./pages/SalesOrders"
 import SalesOrderDetails from "./pages/SalesOrderDetails"
 import Login from "./pages/Login"
+import Settings from "./pages/Settings"
 import Users from "./pages/Users"
 
 
@@ -161,14 +162,9 @@ function ProtectedRoutes(){
 
 
 
-                <Route
-                    path="*"
-                    element={
-                        <Navigate
-                            to="/"
-                            replace
-                        />
-                    }
+                <Route 
+                    path="/settings" 
+                    element={<Settings />} 
                 />
 
 

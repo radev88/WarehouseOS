@@ -462,7 +462,7 @@ function Dashboard(){
 
 
             {
-              stats.top_movers.map((item, index)=>(
+              stats.top_movers.slice(0,5).map((item, index)=>(
 
 
                 <tr
@@ -632,7 +632,7 @@ function Dashboard(){
 
 
             {
-              stats.recent_transactions?.map((transaction)=>(
+              stats.recent_transactions?.slice(0,5).map((transaction)=>(
 
 
                 <tr

@@ -11,60 +11,83 @@ import type {
     User
 } from "../api/users"
 
+import KPICard from "../components/dashboard/KPICard"
+
+import StatusBadge from "../components/common/StatusBadge"
+
+import {
+    Users as UsersIcon,
+    ShieldCheck,
+    UserCog,
+    Warehouse
+} from "lucide-react"
+
 
 
 function Users(){
 
 
-    const [users, setUsers] = useState<User[]>([])
-
-    const [loading, setLoading] = useState(true)
-
-    const [showForm, setShowForm] = useState(false)
-
-    const [editingUser, setEditingUser] = useState<User | null>(null)
+    const [
+        users,
+        setUsers
+    ] = useState<User[]>([])
 
 
-    const [form, setForm] = useState({
 
-        username: "",
+    const [
+        loading,
+        setLoading
+    ] = useState(true)
 
-        email: "",
 
-        password: "",
 
-        role: "Warehouse User"
+    const [
+        showForm,
+        setShowForm
+    ] = useState(false)
+
+
+
+    const [
+        editingUser,
+        setEditingUser
+    ] = useState<User | null>(null)
+
+
+
+    const [
+        form,
+        setForm
+    ] = useState({
+
+        username:"",
+        email:"",
+        password:"",
+        role:"Warehouse User"
 
     })
 
 
 
-    useEffect(() => {
 
-        let active = true
+
+    useEffect(()=>{
 
 
         async function fetchUsers(){
 
-            try {
+            try{
 
-                const data = await getUsers()
+                const data =
+                    await getUsers()
 
-
-                if(active){
-
-                    setUsers(data)
-
-                }
+                setUsers(data)
 
             }
-            finally {
 
-                if(active){
+            finally{
 
-                    setLoading(false)
-
-                }
+                setLoading(false)
 
             }
 
@@ -74,14 +97,8 @@ function Users(){
         fetchUsers()
 
 
-        return () => {
+    },[])
 
-            active = false
-
-        }
-
-
-    }, [])
 
 
 
@@ -89,7 +106,8 @@ function Users(){
 
     async function refreshUsers(){
 
-        const data = await getUsers()
+        const data =
+            await getUsers()
 
         setUsers(data)
 
@@ -99,17 +117,16 @@ function Users(){
 
 
 
+
     function resetForm(){
+
 
         setForm({
 
-            username: "",
-
-            email: "",
-
-            password: "",
-
-            role: "Warehouse User"
+            username:"",
+            email:"",
+            password:"",
+            role:"Warehouse User"
 
         })
 
@@ -124,8 +141,9 @@ function Users(){
 
 
 
+
     async function handleSubmit(
-        e: React.FormEvent
+        e:React.FormEvent
     ){
 
         e.preventDefault()
@@ -133,33 +151,38 @@ function Users(){
 
         if(editingUser){
 
+
             await updateUser(
 
                 editingUser.id,
 
                 {
 
-                    username: form.username,
+                    username:form.username,
 
-                    email: form.email,
+                    email:form.email,
 
-                    role: form.role
+                    role:form.role
 
                 }
 
             )
 
+
         }
-        else {
+        else{
+
 
             await createUser(form)
+
 
         }
 
 
         resetForm()
 
-        await refreshUsers()
+        refreshUsers()
+
 
     }
 
@@ -168,26 +191,30 @@ function Users(){
 
 
 
+
     function editUser(
-        user: User
+        user:User
     ){
+
 
         setEditingUser(user)
 
+
         setForm({
 
-            username: user.username,
+            username:user.username,
 
-            email: user.email,
+            email:user.email,
 
-            password: "",
+            password:"",
 
-            role: user.role
+            role:user.role
 
         })
 
 
         setShowForm(true)
+
 
     }
 
@@ -200,13 +227,17 @@ function Users(){
         id:number
     ){
 
+
         if(confirm("Delete this user?")){
+
 
             await deleteUser(id)
 
-            await refreshUsers()
+            refreshUsers()
+
 
         }
+
 
     }
 
@@ -214,7 +245,60 @@ function Users(){
 
 
 
+
+    function getInitials(
+        username:string
+    ){
+
+        return username
+
+            .trim()
+
+            .split(/\s+/)
+
+            .slice(0,2)
+
+            .map(
+                name => name[0]
+            )
+
+            .join("")
+
+            .toUpperCase()
+
+    }
+
+
+
+
+
+
+    const admins =
+        users.filter(
+            user=>user.role==="Admin"
+        ).length
+
+
+
+    const managers =
+        users.filter(
+            user=>user.role==="Manager"
+        ).length
+
+
+
+    const warehouseUsers =
+        users.filter(
+            user=>user.role==="Warehouse User"
+        ).length
+
+
+
+
+
+
     if(loading){
+
 
         return (
 
@@ -232,31 +316,28 @@ function Users(){
 
 
 
+
     return (
 
-        <div className="p-6">
+        <div className="space-y-8">
 
 
-            <div className="flex justify-between items-center mb-6">
 
-                <h1 className="text-2xl font-bold">
+            <div>
+
+
+                <h1 className="text-3xl font-bold">
 
                     User Management
 
                 </h1>
 
 
-                <button
+                <p className="text-gray-500">
 
-                    className="bg-slate-900 text-white px-4 py-2 rounded"
+                    Manage system access, roles, and warehouse permissions.
 
-                    onClick={() => setShowForm(true)}
-
-                >
-
-                    Add User
-
-                </button>
+                </p>
 
 
             </div>
@@ -265,226 +346,281 @@ function Users(){
 
 
 
-            {showForm && (
-
-                <form
-
-                    onSubmit={handleSubmit}
-
-                    className="border rounded-lg p-5 mb-6 space-y-4"
-
-                >
 
 
-                    <input
+            <div className="
+                grid
+                grid-cols-1
+                sm:grid-cols-2
+                xl:grid-cols-4
+                gap-6
+            ">
 
-                        className="border p-2 w-full"
 
-                        placeholder="Username"
+                <KPICard
 
-                        value={form.username}
+                    title="Total Users"
 
-                        onChange={
-                            e =>
-                            setForm({
-                                ...form,
-                                username:e.target.value
-                            })
-                        }
+                    value={users.length}
 
-                    />
+                    description="System accounts"
+
+                    icon={UsersIcon}
+
+                />
 
 
 
-                    <input
+                <KPICard
 
-                        className="border p-2 w-full"
+                    title="Administrators"
 
-                        placeholder="Email"
+                    value={admins}
 
-                        type="email"
+                    description="Full system access"
 
-                        value={form.email}
+                    icon={ShieldCheck}
 
-                        onChange={
-                            e =>
-                            setForm({
-                                ...form,
-                                email:e.target.value
-                            })
-                        }
-
-                    />
+                />
 
 
 
-                    {!editingUser && (
+                <KPICard
 
-                        <input
+                    title="Managers"
 
-                            className="border p-2 w-full"
+                    value={managers}
 
-                            placeholder="Password"
+                    description="Operations management"
 
-                            type="password"
+                    icon={UserCog}
 
-                            value={form.password}
-
-                            onChange={
-                                e =>
-                                setForm({
-                                    ...form,
-                                    password:e.target.value
-                                })
-                            }
-
-                        />
-
-                    )}
+                />
 
 
 
-                    <select
+                <KPICard
 
-                        className="border p-2 w-full"
+                    title="Warehouse Users"
 
-                        value={form.role}
+                    value={warehouseUsers}
 
-                        onChange={
-                            e =>
-                            setForm({
-                                ...form,
-                                role:e.target.value
-                            })
-                        }
+                    description="Warehouse operations"
+
+                    icon={Warehouse}
+
+                />
+
+
+            </div>
+
+
+
+
+
+
+
+            <div className="
+                rounded-xl
+                border
+                bg-white
+                shadow-sm
+                overflow-hidden
+            ">
+
+
+
+                <div className="
+                    flex
+                    justify-between
+                    items-center
+                    p-6
+                    border-b
+                ">
+
+
+                    <h2 className="text-lg font-semibold">
+
+                        Users
+
+                    </h2>
+
+
+
+                    <button
+
+                        onClick={()=>setShowForm(true)}
+
+                        className="
+                            bg-slate-900
+                            text-white
+                            px-4
+                            py-2
+                            rounded-xl
+                            hover:bg-slate-700
+                        "
 
                     >
 
-                        <option>
-                            Admin
-                        </option>
+                        Add User
 
-                        <option>
-                            Manager
-                        </option>
+                    </button>
 
-                        <option>
-                            Warehouse User
-                        </option>
 
-                    </select>
+                </div>
 
 
 
-                    <div className="flex gap-3">
-
-
-                        <button
-
-                            type="submit"
-
-                            className="bg-blue-600 text-white px-4 py-2 rounded"
-
-                        >
-
-                            Save
-
-                        </button>
 
 
 
-                        <button
 
-                            type="button"
 
-                            className="border px-4 py-2 rounded"
+                {
+                    showForm && (
 
-                            onClick={resetForm}
+                        <form
+
+                            onSubmit={handleSubmit}
+
+                            className="
+                                p-6
+                                border-b
+                                space-y-4
+                                bg-slate-50
+                            "
 
                         >
 
-                            Cancel
+                            <input
 
-                        </button>
+                                className="
+                                    w-full
+                                    rounded-lg
+                                    border
+                                    p-3
+                                "
 
+                                placeholder="Username"
 
-                    </div>
+                                value={form.username}
 
+                                onChange={
+                                    e=>
+                                    setForm({
+                                        ...form,
+                                        username:e.target.value
+                                    })
+                                }
 
-                </form>
-
-            )}
-
-
-
-
-
-
-            <table className="w-full border">
-
-
-                <thead>
-
-                    <tr className="border">
-
-                        <th className="p-3 text-left">
-                            Username
-                        </th>
-
-                        <th className="p-3 text-left">
-                            Email
-                        </th>
-
-                        <th className="p-3 text-left">
-                            Role
-                        </th>
-
-                        <th className="p-3">
-                            Actions
-                        </th>
-
-                    </tr>
-
-                </thead>
+                            />
 
 
 
-                <tbody>
+                            <input
 
-                    {users.map(user => (
+                                className="
+                                    w-full
+                                    rounded-lg
+                                    border
+                                    p-3
+                                "
 
-                        <tr
-                            key={user.id}
-                            className="border"
-                        >
+                                placeholder="Email"
 
-                            <td className="p-3">
-                                {user.username}
-                            </td>
+                                value={form.email}
 
+                                onChange={
+                                    e=>
+                                    setForm({
+                                        ...form,
+                                        email:e.target.value
+                                    })
+                                }
 
-                            <td className="p-3">
-                                {user.email}
-                            </td>
-
-
-                            <td className="p-3">
-                                {user.role}
-                            </td>
+                            />
 
 
-                            <td className="p-3 flex gap-2">
+
+                            {!editingUser && (
+
+                                <input
+
+                                    className="
+                                        w-full
+                                        rounded-lg
+                                        border
+                                        p-3
+                                    "
+
+                                    placeholder="Password"
+
+                                    type="password"
+
+                                    value={form.password}
+
+                                    onChange={
+                                        e=>
+                                        setForm({
+                                            ...form,
+                                            password:e.target.value
+                                        })
+                                    }
+
+                                />
+
+                            )}
+
+
+
+                            <select
+
+                                className="
+                                    w-full
+                                    rounded-lg
+                                    border
+                                    p-3
+                                "
+
+                                value={form.role}
+
+                                onChange={
+                                    e=>
+                                    setForm({
+                                        ...form,
+                                        role:e.target.value
+                                    })
+                                }
+
+                            >
+
+                                <option>Admin</option>
+
+                                <option>Manager</option>
+
+                                <option>Warehouse User</option>
+
+
+                            </select>
+
+
+
+                            <div className="flex gap-3">
 
 
                                 <button
 
-                                    className="border px-3 py-1 rounded"
-
-                                    onClick={() => editUser(user)}
+                                    className="
+                                        bg-blue-600
+                                        text-white
+                                        px-4
+                                        py-2
+                                        rounded-lg
+                                    "
 
                                 >
 
-                                    Edit
+                                    Save
 
                                 </button>
 
@@ -492,29 +628,239 @@ function Users(){
 
                                 <button
 
-                                    className="bg-red-600 text-white px-3 py-1 rounded"
+                                    type="button"
 
-                                    onClick={() => removeUser(user.id)}
+                                    onClick={resetForm}
+
+                                    className="
+                                        border
+                                        px-4
+                                        py-2
+                                        rounded-lg
+                                    "
 
                                 >
 
-                                    Delete
+                                    Cancel
 
                                 </button>
 
 
-                            </td>
+                            </div>
 
 
-                        </tr>
+                        </form>
 
-                    ))}
-
-
-                </tbody>
+                    )
+                }
 
 
-            </table>
+
+
+
+
+
+
+                <div className="overflow-x-auto">
+
+
+                    <table className="w-full">
+
+
+                        <thead className="bg-slate-50">
+
+
+                            <tr>
+
+
+                                <th className="p-4 text-left">
+                                    User
+                                </th>
+
+
+                                <th className="p-4 text-left">
+                                    Role
+                                </th>
+
+
+                                <th className="p-4 text-left">
+                                    Email
+                                </th>
+
+
+                                <th className="p-4">
+                                    Actions
+                                </th>
+
+
+                            </tr>
+
+
+                        </thead>
+
+
+
+
+
+                        <tbody>
+
+
+                            {
+                                users.map(user=>(
+
+
+                                    <tr
+
+                                        key={user.id}
+
+                                        className="
+                                            border-t
+                                            hover:bg-slate-50
+                                        "
+
+                                    >
+
+
+
+                                        <td className="p-4">
+
+
+                                            <div className="flex items-center gap-3">
+
+
+                                                <div className="
+                                                    h-10
+                                                    w-10
+                                                    rounded-full
+                                                    bg-slate-900
+                                                    text-white
+                                                    flex
+                                                    items-center
+                                                    justify-center
+                                                    font-semibold
+                                                ">
+
+                                                    {
+                                                        getInitials(
+                                                            user.username
+                                                        )
+                                                    }
+
+                                                </div>
+
+
+                                                <div>
+
+                                                    <p className="font-medium">
+
+                                                        {user.username}
+
+                                                    </p>
+
+
+                                                </div>
+
+
+                                            </div>
+
+
+                                        </td>
+
+
+
+
+                                        <td className="p-4">
+
+                                            <StatusBadge
+                                                status={user.role}
+                                            />
+
+                                        </td>
+
+
+
+                                        <td className="p-4">
+
+                                            {user.email}
+
+                                        </td>
+
+
+
+
+                                        <td className="p-4">
+
+
+                                            <div className="flex gap-2">
+
+
+                                                <button
+
+                                                    onClick={()=>
+                                                        editUser(user)
+                                                    }
+
+                                                    className="
+                                                        border
+                                                        px-3
+                                                        py-1
+                                                        rounded-lg
+                                                    "
+
+                                                >
+
+                                                    Edit
+
+                                                </button>
+
+
+
+                                                <button
+
+                                                    onClick={()=>
+                                                        removeUser(user.id)
+                                                    }
+
+                                                    className="
+                                                        bg-red-600
+                                                        text-white
+                                                        px-3
+                                                        py-1
+                                                        rounded-lg
+                                                    "
+
+                                                >
+
+                                                    Delete
+
+                                                </button>
+
+
+                                            </div>
+
+
+                                        </td>
+
+
+                                    </tr>
+
+
+                                ))
+                            }
+
+
+                        </tbody>
+
+
+                    </table>
+
+
+                </div>
+
+
+
+            </div>
+
 
 
         </div>
@@ -522,6 +868,7 @@ function Users(){
     )
 
 }
+
 
 
 export default Users

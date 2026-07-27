@@ -135,7 +135,7 @@ function InventoryTable(){
                     <tbody>
 
 
-                        {inventory.map((item)=>(
+                        {inventory.slice(0,5).map((item)=>(
 
 
                             <tr

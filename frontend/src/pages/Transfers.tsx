@@ -5,32 +5,110 @@ import TransferForm from "../components/transfers/TransferForm"
 function Transfers(){
 
 
-return (
+    return (
 
-<div>
-
-
-<h1 className="text-3xl font-bold">
-
-Inventory Transfers
-
-</h1>
+        <div
+            className="
+                space-y-8
+            "
+        >
 
 
-<p className="mt-2 mb-8 text-gray-500">
+            {/* Page Header */}
 
-Move inventory between warehouse locations.
-
-</p>
+            <div>
 
 
+                <h1
+                    className="
+                        text-3xl
+                        font-bold
+                        text-slate-800
+                    "
+                >
 
-<TransferForm />
+                    Inventory Transfers
+
+                </h1>
 
 
-</div>
+                <p
+                    className="
+                        mt-2
+                        text-slate-500
+                    "
+                >
 
-)
+                    Move inventory between warehouse locations and maintain accurate stock visibility.
+
+                </p>
+
+
+            </div>
+
+
+
+
+
+            {/* Transfer Section */}
+
+            <div
+                className="
+                    rounded-xl
+                    border
+                    bg-white
+                    p-6
+                    shadow-sm
+                "
+            >
+
+
+                <div
+                    className="
+                        mb-6
+                    "
+                >
+
+                    <h2
+                        className="
+                            text-lg
+                            font-semibold
+                            text-slate-800
+                        "
+                    >
+
+                        Create Inventory Transfer
+
+                    </h2>
+
+
+                    <p
+                        className="
+                            mt-1
+                            text-sm
+                            text-slate-500
+                        "
+                    >
+
+                        Transfer available inventory between warehouse locations.
+
+                    </p>
+
+
+                </div>
+
+
+
+
+                <TransferForm />
+
+
+            </div>
+
+
+        </div>
+
+    )
 
 }
 

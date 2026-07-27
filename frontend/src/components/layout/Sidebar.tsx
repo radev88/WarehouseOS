@@ -110,7 +110,6 @@ function Sidebar() {
           ]
         },
 
-
         {
           name: "Sales Orders",
           path: "/sales-orders",
@@ -185,7 +184,6 @@ function Sidebar() {
           ]
         },
 
-
         {
           name: "Settings",
           path: "/settings",
@@ -222,7 +220,8 @@ function Sidebar() {
     <aside
       className="
         w-72
-        min-h-screen
+        h-screen
+        flex-shrink-0
         bg-slate-950
         text-white
         flex
@@ -254,7 +253,7 @@ function Sidebar() {
             mt-1
           "
         >
-          Warehouse Intelligence Platform
+          Operations Intelligence Platform
         </p>
 
 
@@ -266,6 +265,7 @@ function Sidebar() {
       <nav
         className="
           flex-1
+          overflow-y-auto
           space-y-8
         "
       >
